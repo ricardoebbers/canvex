@@ -2,14 +2,14 @@ defmodule Core.Entity.Canvas do
   @moduledoc """
   Canvas have a fixed `size` and holds `chars` values on `coordinates`.
 
-  Create a new canvas with `Core.Entity.Canvas.new/0`.
+  Create a new `canvas` with `Core.Entity.Canvas.new/0`.
 
   Get a `value` for a specific `coordinate` with `Core.Entity.Canvas.get/2`.
 
   Get an updated `canvas` with a new `value` on `coordinates` with
   `Core.Entity.Canvas.put/3`.
 
-  Get a matrix representation of a canvas with `Core.Entity.Canvas.to_matrix/1`.
+  Get a matrix representation of a canvas with `Core.Entity.Canvas.matrix/1`.
   """
 
   alias Core.Type
@@ -25,7 +25,7 @@ defmodule Core.Entity.Canvas do
             values: %{}
 
   @doc """
-  Creates a new canvas with default width, height and fill
+  Creates a new `canvas` with default `size` and `fill`
 
   These default values are set on the config.exs file:
     config :core, Core.Entity.Canvas,
@@ -60,11 +60,11 @@ defmodule Core.Entity.Canvas do
   end
 
   @doc """
-  Creates a new canvas with given size and fill
+  Creates a new `canvas` with given `size` and `fill`
 
   ## Examples
       iex> Core.Entity.Canvas.new(%{width: 3,height: 4}, '#')
-      %Core.Entity.Canvas{ cols: 4, rows: 3, values: %{
+      %Core.Entity.Canvas{ cols: 3, rows: 4, values: %{
           {0, 0} => '#',
           {0, 1} => '#',
           {0, 2} => '#',
@@ -85,9 +85,9 @@ defmodule Core.Entity.Canvas do
     coordinates = for x <- 0..(width - 1), y <- 0..(height - 1), do: {x, y}
 
     %__MODULE__{
-      rows: width,
-      cols: height,
-      values: Map.new(coordinates, fn pair -> {pair, fill} end)
+      rows: height,
+      cols: width,
+      values: Map.new(coordinates, &{&1, fill})
     }
   end
 
@@ -145,7 +145,7 @@ defmodule Core.Entity.Canvas do
   """
   @spec put(t, Type.coordinates(), char()) :: t
   def put(canvas = %{rows: rows, cols: cols, values: values}, %{x: x, y: y}, value)
-      when x >= 0 and x < rows and y >= 0 and y < cols do
+      when x >= 0 and x < cols and y >= 0 and y < rows do
     %{canvas | values: Map.put(values, {x, y}, value)}
   end
 
@@ -154,32 +154,28 @@ defmodule Core.Entity.Canvas do
   @doc """
   Converts `canvas` to a matrix of `char`
 
-
   Each `coordinate` pair `{x, y}` is put into it's corresponding positon
   on the matrix.
 
   The resulting matrix is a list of lists with size `canvas.rows` x `canvas.cols`
 
   ## Examples
-      iex> canvas = Core.Entity.Canvas.new(%{width: 3, height: 4}, '#')
-      iex> Core.Entity.Canvas.to_matrix(canvas)
+      iex> canvas = Core.Entity.Canvas.new(%{width: 2, height: 4}, '#')
+      iex> Core.Entity.Canvas.matrix(canvas)
       [
-        ['#', '#', '#'],
-        ['#', '#', '#'],
-        ['#', '#', '#'],
-        ['#', '#', '#']
+        ['#', '#'],
+        ['#', '#'],
+        ['#', '#'],
+        ['#', '#']
       ]
   """
-  @spec to_matrix(t) :: list(list(char()))
-  def to_matrix(canvas) do
-    Enum.reduce((canvas.cols - 1)..0, [], fn col, acc ->
-      [
-        Enum.reduce((canvas.rows - 1)..0, [], fn row, acc ->
-          [Map.get(canvas.values, {row, col}) | acc]
-        end)
-        | acc
-      ]
-    end)
+  @spec matrix(t) :: list(list(char()))
+  def matrix(canvas) do
+    coordinates = for y <- 0..(canvas.rows - 1), x <- 0..(canvas.cols - 1), do: {x, y}
+
+    coordinates
+    |> Enum.map(&Map.get(canvas.values, &1))
+    |> Enum.chunk_every(canvas.cols)
   end
 
   defp default_params do

@@ -30,7 +30,7 @@ defmodule Core.Entity.CanvasTest do
       size = %{width: 1, height: 2}
       fill = '#'
 
-      assert %Canvas{cols: 2, rows: 1, values: %{{0, 0} => '#', {0, 1} => '#'}} ==
+      assert %Canvas{cols: 1, rows: 2, values: %{{0, 0} => '#', {0, 1} => '#'}} ==
                Canvas.new(size, fill)
     end
   end
@@ -87,14 +87,14 @@ defmodule Core.Entity.CanvasTest do
     end
   end
 
-  describe "to_matrix/1" do
+  describe "matrix/1" do
     test "should return a list of lists of values from canvas" do
       size = %{width: 3, height: 3}
       fill = '.'
       canvas = Canvas.new(size, fill)
 
       assert [['.', '.', '.'], ['.', '.', '.'], ['.', '.', '.']] ==
-               Canvas.to_matrix(canvas)
+               Canvas.matrix(canvas)
     end
 
     test "should keep rows and columns ordered correctly" do
@@ -109,7 +109,7 @@ defmodule Core.Entity.CanvasTest do
                ['.', '#', '.', '.', '.'],
                ['.', '.', '.', '.', '.'],
                ['.', '.', '.', '.', '.']
-             ] == Canvas.to_matrix(canvas)
+             ] == Canvas.matrix(canvas)
     end
   end
 end

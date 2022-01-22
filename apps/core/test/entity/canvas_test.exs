@@ -33,6 +33,34 @@ defmodule Core.Entity.CanvasTest do
       assert %Canvas{cols: 1, rows: 2, values: %{{0, 0} => '#', {0, 1} => '#'}} ==
                Canvas.new(size, fill)
     end
+
+    test "should return error when trying to create canvas with non-ascii printable chars as fill" do
+      size = %{width: 1, height: 2}
+      fill = 'ã'
+
+      assert {:error, _reason} = Canvas.new(size, fill)
+    end
+
+    test "should return error when trying to create canvas with multiple chars as fill" do
+      size = %{width: 1, height: 2}
+      fill = 'abcd'
+
+      assert {:error, _reason} = Canvas.new(size, fill)
+    end
+
+    test "should return error when trying to create canvas with null fill" do
+      size = %{width: 1, height: 2}
+      fill = nil
+
+      assert {:error, _reason} = Canvas.new(size, fill)
+    end
+
+    test "should return error when trying to create canvas with '' fill" do
+      size = %{width: 1, height: 2}
+      fill = ''
+
+      assert {:error, _reason} = Canvas.new(size, fill)
+    end
   end
 
   describe "get/2" do
@@ -53,25 +81,57 @@ defmodule Core.Entity.CanvasTest do
     end
   end
 
-  describe "update/3" do
-    test "should update a value of given coordinates on the canvas" do
+  describe "put/3" do
+    setup do
       size = %{width: 2, height: 2}
       fill = '#'
       canvas = Canvas.new(size, fill)
-      coordinates = %{x: 1, y: 0}
+      %{canvas: canvas}
+    end
 
+    test "should update a value of given coordinates on the canvas", %{canvas: canvas} do
       assert %Canvas{
                cols: 2,
                rows: 2,
-               values: %{{0, 0} => '#', {0, 1} => '#', {1, 0} => '.', {1, 1} => '#'}
-             } == Canvas.put(canvas, coordinates, '.')
+               values: %{
+                 {0, 0} => '#',
+                 {0, 1} => '#',
+                 {1, 0} => '.',
+                 {1, 1} => '#'
+               }
+             } == Canvas.put(canvas, %{x: 1, y: 0}, '.')
     end
 
-    test "should not update out of bounds" do
-      size = %{width: 2, height: 2}
-      fill = '#'
-      canvas = Canvas.new(size, fill)
-      coordinates = %{x: 3, y: 3}
+    test "should not update out of bounds", %{canvas: canvas} do
+      assert %Core.Entity.Canvas{
+               cols: 2,
+               rows: 2,
+               values: %{
+                 {0, 0} => '#',
+                 {0, 1} => '#',
+                 {1, 0} => '#',
+                 {1, 1} => '#'
+               }
+             } ==
+               Canvas.put(canvas, %{x: 3, y: 3}, '.')
+    end
+
+    test "should not update when value is a non-ascii printable char", %{canvas: canvas} do
+      assert %Core.Entity.Canvas{
+               cols: 2,
+               rows: 2,
+               values: %{
+                 {0, 0} => '#',
+                 {0, 1} => '#',
+                 {1, 0} => '#',
+                 {1, 1} => '#'
+               }
+             } ==
+               Canvas.put(canvas, %{x: 0, y: 0}, 'ã')
+    end
+
+    test "should not update when value is multiple chars", %{canvas: canvas} do
+      coordinates = %{x: 0, y: 0}
 
       assert %Core.Entity.Canvas{
                cols: 2,
@@ -83,7 +143,21 @@ defmodule Core.Entity.CanvasTest do
                  {1, 1} => '#'
                }
              } ==
-               Canvas.put(canvas, coordinates, '.')
+               Canvas.put(canvas, coordinates, 'abc')
+    end
+
+    test "should return error when trying to create canvas with null fill" do
+      size = %{width: 1, height: 2}
+      fill = nil
+
+      assert {:error, _reason} = Canvas.new(size, fill)
+    end
+
+    test "should return error when trying to create canvas with '' fill" do
+      size = %{width: 1, height: 2}
+      fill = ''
+
+      assert {:error, _reason} = Canvas.new(size, fill)
     end
   end
 

@@ -22,7 +22,7 @@ defmodule Core.Entity.Canvas do
 
   defstruct rows: 0,
             cols: 0,
-            values: %{}
+            values: %{{0, 0} => 0}
 
   @doc """
   Creates a new `canvas` with default `size` and `fill`
@@ -53,7 +53,7 @@ defmodule Core.Entity.Canvas do
         }
       }
   """
-  @spec new :: t
+  @spec new :: t | {:error, term()}
   def new do
     params = default_params()
     new(%{width: params.width, height: params.height}, params.fill)
@@ -80,15 +80,19 @@ defmodule Core.Entity.Canvas do
         }
       }
   """
-  @spec new(Type.size(), char()) :: t
+  @spec new(Type.size(), charlist()) :: t | {:error, term()}
   def new(%{width: width, height: height}, fill) do
     coordinates = for x <- 0..(width - 1), y <- 0..(height - 1), do: {x, y}
 
-    %__MODULE__{
-      rows: height,
-      cols: width,
-      values: Map.new(coordinates, &{&1, fill})
-    }
+    if !is_nil(fill) and List.ascii_printable?(fill) and length(fill) == 1 do
+      %__MODULE__{
+        rows: height,
+        cols: width,
+        values: Map.new(coordinates, &{&1, fill})
+      }
+    else
+      {:error, "fill '#{fill}' must be a single ASCII printable char"}
+    end
   end
 
   @doc """
@@ -106,7 +110,7 @@ defmodule Core.Entity.Canvas do
       iex> Core.Entity.Canvas.get(canvas, %{x: -1, y: 0})
       nil
   """
-  @spec get(t, Type.coordinates()) :: char() | nil
+  @spec get(t, Type.coordinates()) :: charlist() | nil
   def get(canvas, _coordinates = %{x: x, y: y}) do
     Map.get(canvas.values, {x, y})
   end
@@ -143,10 +147,14 @@ defmodule Core.Entity.Canvas do
         }
       }
   """
-  @spec put(t, Type.coordinates(), char()) :: t
+  @spec put(t, Type.coordinates(), charlist()) :: t
   def put(canvas = %{rows: rows, cols: cols, values: values}, %{x: x, y: y}, value)
       when x >= 0 and x < cols and y >= 0 and y < rows do
-    %{canvas | values: Map.put(values, {x, y}, value)}
+    if !is_nil(value) and List.ascii_printable?(value) and length(value) == 1 do
+      %{canvas | values: Map.put(values, {x, y}, value)}
+    else
+      canvas
+    end
   end
 
   def put(canvas, _coordinates, _value), do: canvas

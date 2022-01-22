@@ -3,6 +3,8 @@ defmodule Core.Entity.CanvasTest do
 
   alias Core.Entity.Canvas
 
+  doctest Canvas
+
   describe "new/0" do
     test "should create a new canvas with default size and fill" do
       assert %Canvas{
@@ -62,7 +64,7 @@ defmodule Core.Entity.CanvasTest do
                cols: 2,
                rows: 2,
                values: %{{0, 0} => '#', {0, 1} => '#', {1, 0} => '.', {1, 1} => '#'}
-             } == Canvas.update(canvas, coordinates, '.')
+             } == Canvas.put(canvas, coordinates, '.')
     end
 
     test "should not update out of bounds" do
@@ -81,7 +83,7 @@ defmodule Core.Entity.CanvasTest do
                  {1, 1} => '#'
                }
              } ==
-               Canvas.update(canvas, coordinates, '.')
+               Canvas.put(canvas, coordinates, '.')
     end
   end
 
@@ -99,7 +101,7 @@ defmodule Core.Entity.CanvasTest do
       size = %{width: 5, height: 5}
       fill = '.'
       coordinates = %{x: 1, y: 2}
-      canvas = Canvas.new(size, fill) |> Canvas.update(coordinates, '#')
+      canvas = Canvas.new(size, fill) |> Canvas.put(coordinates, '#')
 
       assert [
                ['.', '.', '.', '.', '.'],

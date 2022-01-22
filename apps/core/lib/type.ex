@@ -1,4 +1,4 @@
-defmodule Core.Types do
+defmodule Core.Type do
   @type coordinates :: %{
           x: non_neg_integer(),
           y: non_neg_integer()

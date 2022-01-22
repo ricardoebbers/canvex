@@ -1,7 +1,7 @@
-defmodule Core.Entity.CanvasTest do
+defmodule Core.CanvasTest do
   use ExUnit.Case
 
-  alias Core.Entity.Canvas
+  alias Core.Canvas
 
   doctest Canvas
 
@@ -103,7 +103,7 @@ defmodule Core.Entity.CanvasTest do
     end
 
     test "should not update out of bounds", %{canvas: canvas} do
-      assert %Core.Entity.Canvas{
+      assert %Canvas{
                cols: 2,
                rows: 2,
                values: %{
@@ -117,7 +117,7 @@ defmodule Core.Entity.CanvasTest do
     end
 
     test "should not update when value is a non-ascii printable char", %{canvas: canvas} do
-      assert %Core.Entity.Canvas{
+      assert %Canvas{
                cols: 2,
                rows: 2,
                values: %{
@@ -133,7 +133,7 @@ defmodule Core.Entity.CanvasTest do
     test "should not update when value is multiple chars", %{canvas: canvas} do
       coordinates = %{x: 0, y: 0}
 
-      assert %Core.Entity.Canvas{
+      assert %Canvas{
                cols: 2,
                rows: 2,
                values: %{
@@ -197,7 +197,7 @@ defmodule Core.Entity.CanvasTest do
 
   describe "from_charlist/2" do
     test "should create a new canvas given a charlist and a width" do
-      assert %Core.Entity.Canvas{
+      assert %Canvas{
                cols: 4,
                rows: 3,
                values: %{
@@ -239,7 +239,7 @@ defmodule Core.Entity.CanvasTest do
     test "should create a new canvas" do
       myers_difference = [del: 'aaa', ins: 'bbb']
 
-      assert %Core.Entity.Canvas{
+      assert %Canvas{
                cols: 1,
                rows: 3,
                values: %{{0, 0} => 'b', {0, 1} => 'b', {0, 2} => 'b'}

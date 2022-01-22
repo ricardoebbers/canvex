@@ -1,15 +1,15 @@
-defmodule Core.Entity.Canvas do
+defmodule Core.Canvas do
   @moduledoc """
   Canvas have a fixed `size` and holds `chars` values on `coordinates`.
 
-  Create a new `canvas` with `Core.Entity.Canvas.new/0`.
+  Create a new `canvas` with `Core.Canvas.new/0`.
 
-  Get a `value` for a specific `coordinate` with `Core.Entity.Canvas.get/2`.
+  Get a `value` for a specific `coordinate` with `Core.Canvas.get/2`.
 
   Get an updated `canvas` with a new `value` on `coordinates` with
-  `Core.Entity.Canvas.put/3`.
+  `Core.Canvas.put/3`.
 
-  Get a matrix representation of a canvas with `Core.Entity.Canvas.matrix/1`.
+  Get a matrix representation of a canvas with `Core.Canvas.matrix/1`.
   """
 
   alias Core.Type
@@ -28,7 +28,7 @@ defmodule Core.Entity.Canvas do
   Creates a new `canvas` with default `size` and `fill`
 
   These default values are set on the config.exs file:
-    config :core, Core.Entity.Canvas,
+    config :core, Core.Canvas,
       # can be any positive integer
       default_width: 3,
       default_height: 3,
@@ -36,8 +36,8 @@ defmodule Core.Entity.Canvas do
       default_fill: char()
 
   ## Examples
-      iex> Core.Entity.Canvas.new()
-      %Core.Entity.Canvas{
+      iex> Core.Canvas.new()
+      %Core.Canvas{
         cols: 3,
         rows: 3,
         values: %{
@@ -63,8 +63,8 @@ defmodule Core.Entity.Canvas do
   Creates a new `canvas` with given `size` and `fill`
 
   ## Examples
-      iex> Core.Entity.Canvas.new(%{width: 3,height: 4}, '#')
-      %Core.Entity.Canvas{ cols: 3, rows: 4, values: %{
+      iex> Core.Canvas.new(%{width: 3,height: 4}, '#')
+      %Core.Canvas{ cols: 3, rows: 4, values: %{
           {0, 0} => '#',
           {0, 1} => '#',
           {0, 2} => '#',
@@ -102,12 +102,12 @@ defmodule Core.Entity.Canvas do
   Otherwise, `nil` is returned.
 
   ## Examples
-      iex> canvas = Core.Entity.Canvas.new(%{width: 2, height: 2}, '#')
-      iex> Core.Entity.Canvas.get(canvas, %{x: 1,y: 0})
+      iex> canvas = Core.Canvas.new(%{width: 2, height: 2}, '#')
+      iex> Core.Canvas.get(canvas, %{x: 1,y: 0})
       '#'
-      iex> Core.Entity.Canvas.get(canvas, %{x: 5, y: 9})
+      iex> Core.Canvas.get(canvas, %{x: 5, y: 9})
       nil
-      iex> Core.Entity.Canvas.get(canvas, %{x: -1, y: 0})
+      iex> Core.Canvas.get(canvas, %{x: -1, y: 0})
       nil
   """
   @spec get(t, Type.coordinates()) :: charlist() | nil
@@ -123,9 +123,9 @@ defmodule Core.Entity.Canvas do
   Otherwise, returns the `canvas` unchanged.
 
   ## Examples
-      iex> canvas = Core.Entity.Canvas.new(%{width: 2, height: 2}, '#')
-      iex> Core.Entity.Canvas.put(canvas, %{x: 1, y: 0}, '.')
-      %Core.Entity.Canvas{
+      iex> canvas = Core.Canvas.new(%{width: 2, height: 2}, '#')
+      iex> Core.Canvas.put(canvas, %{x: 1, y: 0}, '.')
+      %Core.Canvas{
         cols: 2,
         rows: 2,
         values: %{
@@ -135,8 +135,8 @@ defmodule Core.Entity.Canvas do
           {1, 1} => '#'
         }
       }
-      iex> Core.Entity.Canvas.put(canvas, %{x: 5, y: 9}, '.')
-      %Core.Entity.Canvas{
+      iex> Core.Canvas.put(canvas, %{x: 5, y: 9}, '.')
+      %Core.Canvas{
         cols: 2,
         rows: 2,
         values: %{
@@ -168,8 +168,8 @@ defmodule Core.Entity.Canvas do
   The resulting matrix is a list of lists with size `canvas.rows` x `canvas.cols`
 
   ## Examples
-      iex> canvas = Core.Entity.Canvas.new(%{width: 2, height: 4}, '#')
-      iex> Core.Entity.Canvas.matrix(canvas)
+      iex> canvas = Core.Canvas.new(%{width: 2, height: 4}, '#')
+      iex> Core.Canvas.matrix(canvas)
       [
         ['#', '#'],
         ['#', '#'],
@@ -194,8 +194,8 @@ defmodule Core.Entity.Canvas do
   Returns a tuple `{charlist, width}`
 
   ## Examples
-      iex> canvas = Core.Entity.Canvas.new(%{width: 3, height: 4}, '#')
-      iex> Core.Entity.Canvas.charlist(canvas)
+      iex> canvas = Core.Canvas.new(%{width: 3, height: 4}, '#')
+      iex> Core.Canvas.charlist(canvas)
       {'############', 3}
   """
   @spec charlist(t) :: {charlist(), pos_integer()}
@@ -213,8 +213,8 @@ defmodule Core.Entity.Canvas do
 
   ## Examples
       iex> charlist = 'a...b...c...'
-      iex> Core.Entity.Canvas.from_charlist(charlist, 4)
-      %Core.Entity.Canvas{
+      iex> Core.Canvas.from_charlist(charlist, 4)
+      %Core.Canvas{
         cols: 4,
         rows: 3,
         values: %{
@@ -257,12 +257,12 @@ defmodule Core.Entity.Canvas do
   Otherwise, returns `{:error, reason}`
 
   ## Examples
-      iex> c1 = Core.Entity.Canvas.from_charlist('aaaabbbbcccc', 4)
-      iex> c2 = Core.Entity.Canvas.from_charlist('aaaabbbbdddd', 4)
-      iex> Core.Entity.Canvas.myers_difference(c1, c2)
+      iex> c1 = Core.Canvas.from_charlist('aaaabbbbcccc', 4)
+      iex> c2 = Core.Canvas.from_charlist('aaaabbbbdddd', 4)
+      iex> Core.Canvas.myers_difference(c1, c2)
       {[eq: 'aaaabbbb', del: 'cccc', ins: 'dddd'], 4}
-      iex> c3 = Core.Entity.Canvas.from_charlist('aaaabbbbcccc', 3)
-      iex> Core.Entity.Canvas.myers_difference(c1, c3)
+      iex> c3 = Core.Canvas.from_charlist('aaaabbbbcccc', 3)
+      iex> Core.Canvas.myers_difference(c1, c3)
       {:error, "Both canvas need to have the same shape"}
   """
   @spec myers_difference(t, t) ::
@@ -282,8 +282,8 @@ defmodule Core.Entity.Canvas do
 
   ## Examples
       iex> myers_difference = [eq: 'aaaabbbb', del: 'cccc', ins: 'dddd']
-      iex> Core.Entity.Canvas.from_myers_difference(myers_difference, 4)
-      %Core.Entity.Canvas{
+      iex> Core.Canvas.from_myers_difference(myers_difference, 4)
+      %Core.Canvas{
         cols: 4,
         rows: 3,
         values: %{

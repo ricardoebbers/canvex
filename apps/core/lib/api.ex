@@ -1,6 +1,5 @@
-defmodule Core do
-  alias Core.Entity.Canvas
-  alias Core.Type
+defmodule Core.API do
+  alias Core.{Canvas, Type}
 
   @type canvas :: Canvas.t()
   @type coordinates :: Type.coordinates()

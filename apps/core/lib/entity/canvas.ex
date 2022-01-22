@@ -1,21 +1,18 @@
 defmodule Core.Entity.Canvas do
   @type t :: %__MODULE__{
-    rows: pos_integer(),
-    cols: pos_integer(),
-    values: %{{non_neg_integer(), non_neg_integer()} => char()}
-  }
+          rows: pos_integer(),
+          cols: pos_integer(),
+          values: %{{non_neg_integer(), non_neg_integer()} => char()}
+        }
 
-  @width 3
-  @height 3
-  @fill '.'
-
-  defstruct rows: @width,
-            cols: @height,
+  defstruct rows: 0,
+            cols: 0,
             values: %{}
 
   @spec new() :: t
   def new() do
-    new(%{width: @width, height: @height}, @fill)
+    params = default_params()
+    new(%{width: params.width, height: params.height}, params.fill)
   end
 
   @spec new(Type.size(), char()) :: t
@@ -52,5 +49,10 @@ defmodule Core.Entity.Canvas do
         | acc
       ]
     end)
+  end
+
+  defp default_params() do
+    config = Application.get_env(:core, __MODULE__)
+    %{width: config[:default_width], height: config[:default_height], fill: config[:default_fill]}
   end
 end

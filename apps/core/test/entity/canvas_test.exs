@@ -186,4 +186,64 @@ defmodule Core.Entity.CanvasTest do
              ] == Canvas.matrix(canvas)
     end
   end
+
+  describe "charlist/1" do
+    test "should return {charlist, canvas.cols} from a canvas" do
+      size = %{width: 10, height: 1}
+      fill = '#'
+      assert {'##########', 10} == Canvas.new(size, fill) |> Canvas.charlist()
+    end
+  end
+
+  describe "from_charlist/2" do
+    test "should create a new canvas given a charlist and a width" do
+      assert %Core.Entity.Canvas{
+               cols: 4,
+               rows: 3,
+               values: %{
+                 {0, 0} => 'a',
+                 {0, 1} => 'e',
+                 {0, 2} => 'i',
+                 {1, 0} => 'b',
+                 {1, 1} => 'f',
+                 {1, 2} => 'j',
+                 {2, 0} => 'c',
+                 {2, 1} => 'g',
+                 {2, 2} => 'k',
+                 {3, 0} => 'd',
+                 {3, 1} => 'h',
+                 {3, 2} => 'l'
+               }
+             } ==
+               Canvas.from_charlist('abcdefghijkl', 4)
+    end
+  end
+
+  describe "myers_difference/2" do
+    test "should calculate the myers_difference from two different canvas" do
+      c1 = Canvas.from_charlist('aaabbbccc', 3)
+      c2 = Canvas.from_charlist('aaabbbddd', 3)
+      assert {[eq: 'aaabbb', del: 'ccc', ins: 'ddd'], 3} == Canvas.myers_difference(c1, c2)
+    end
+
+    test "should return error when canvas have different shapes" do
+      c1 = Canvas.from_charlist('aaaabbbbcccc', 3)
+      c2 = Canvas.from_charlist('aaaabbbbdddd', 4)
+
+      assert {:error, "Both canvas need to have the same shape"} ==
+               Canvas.myers_difference(c1, c2)
+    end
+  end
+
+  describe "from_myers_difference/2" do
+    test "should create a new canvas" do
+      myers_difference = [del: 'aaa', ins: 'bbb']
+
+      assert %Core.Entity.Canvas{
+               cols: 1,
+               rows: 3,
+               values: %{{0, 0} => 'b', {0, 1} => 'b', {0, 2} => 'b'}
+             } == Canvas.from_myers_difference(myers_difference, 1)
+    end
+  end
 end

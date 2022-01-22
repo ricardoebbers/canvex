@@ -186,6 +186,136 @@ defmodule Core.Entity.Canvas do
     |> Enum.chunk_every(canvas.cols)
   end
 
+  @doc """
+  Converts `canvas` to a `charlist`
+
+  The charlist is populated sequencially from `{0, 0}` to `{width, height}`
+
+  Returns a tuple `{charlist, width}`
+
+  ## Examples
+      iex> canvas = Core.Entity.Canvas.new(%{width: 3, height: 4}, '#')
+      iex> Core.Entity.Canvas.charlist(canvas)
+      {'############', 3}
+  """
+  @spec charlist(t) :: {charlist(), pos_integer()}
+  def charlist(canvas) do
+    charlist =
+      canvas
+      |> matrix()
+      |> List.flatten()
+
+    {charlist, canvas.cols}
+  end
+
+  @doc """
+  Creates a new `canvas` given a `charlist` and the canvas `width`
+
+  ## Examples
+      iex> charlist = 'a...b...c...'
+      iex> Core.Entity.Canvas.from_charlist(charlist, 4)
+      %Core.Entity.Canvas{
+        cols: 4,
+        rows: 3,
+        values: %{
+          {0, 0} => 'a',
+          {0, 1} => 'b',
+          {0, 2} => 'c',
+          {1, 0} => '.',
+          {1, 1} => '.',
+          {1, 2} => '.',
+          {2, 0} => '.',
+          {2, 1} => '.',
+          {2, 2} => '.',
+          {3, 0} => '.',
+          {3, 1} => '.',
+          {3, 2} => '.'
+        }
+      }
+  """
+  @spec from_charlist(charlist(), pos_integer()) :: t
+  def from_charlist(charlist, width) do
+    height =
+      charlist
+      |> length()
+      |> div(width)
+
+    base_canvas = new(%{width: width, height: height}, '.')
+
+    charlist
+    |> Stream.with_index()
+    |> Stream.map(fn {char, index} -> {%{x: rem(index, width), y: div(index, width)}, char} end)
+    |> Enum.reduce(base_canvas, fn {coords, char}, acc -> put(acc, coords, [char]) end)
+  end
+
+  @doc """
+  Calculates the `myers_difference` of two `canvas`, based on their `charlist` representations.
+
+  Both `canvas` must have the same shape.
+
+  Returns `{myers_difference, width}` if both `canvas` have the same shape.
+  Otherwise, returns `{:error, reason}`
+
+  ## Examples
+      iex> c1 = Core.Entity.Canvas.from_charlist('aaaabbbbcccc', 4)
+      iex> c2 = Core.Entity.Canvas.from_charlist('aaaabbbbdddd', 4)
+      iex> Core.Entity.Canvas.myers_difference(c1, c2)
+      {[eq: 'aaaabbbb', del: 'cccc', ins: 'dddd'], 4}
+      iex> c3 = Core.Entity.Canvas.from_charlist('aaaabbbbcccc', 3)
+      iex> Core.Entity.Canvas.myers_difference(c1, c3)
+      {:error, "Both canvas need to have the same shape"}
+  """
+  @spec myers_difference(t, t) ::
+          {[{:eq | :ins | :del, list()}], pos_integer()}
+          | {:error, term()}
+  def myers_difference(canvas, other)
+      when canvas.cols == other.cols and canvas.rows == other.rows do
+    {c1_charlist, _} = charlist(canvas)
+    {c2_charlist, _} = charlist(other)
+    {List.myers_difference(c1_charlist, c2_charlist), canvas.cols}
+  end
+
+  def myers_difference(_, _), do: {:error, "Both canvas need to have the same shape"}
+
+  @doc """
+  Creates a new `canvas` given a `myers_difference` and the canvas `width`
+
+  ## Examples
+      iex> myers_difference = [eq: 'aaaabbbb', del: 'cccc', ins: 'dddd']
+      iex> Core.Entity.Canvas.from_myers_difference(myers_difference, 4)
+      %Core.Entity.Canvas{
+        cols: 4,
+        rows: 3,
+        values: %{
+          {0, 0} => 'a',
+          {0, 1} => 'b',
+          {0, 2} => 'd',
+          {1, 0} => 'a',
+          {1, 1} => 'b',
+          {1, 2} => 'd',
+          {2, 0} => 'a',
+          {2, 1} => 'b',
+          {2, 2} => 'd',
+          {3, 0} => 'a',
+          {3, 1} => 'b',
+          {3, 2} => 'd'
+        }
+      }
+  """
+  @spec from_myers_difference([{:eq | :ins | :del, list()}], pos_integer()) :: t
+  def from_myers_difference(myers_difference, width) do
+    myers_difference
+    |> Enum.map(fn {op, values} ->
+      case op do
+        :eq -> values
+        :ins -> values
+        :del -> ''
+      end
+    end)
+    |> List.flatten()
+    |> from_charlist(width)
+  end
+
   defp default_params do
     config = Application.get_env(:core, __MODULE__)
     %{width: config[:default_width], height: config[:default_height], fill: config[:default_fill]}

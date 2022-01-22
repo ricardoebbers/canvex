@@ -15,13 +15,6 @@ defmodule Core.MixProject do
       dialyzer: [
         plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
         ignore_warnings: ".dialyzer_ignore.exs"
-      ],
-      test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [
-        coveralls: :test,
-        "coveralls.detail": :test,
-        "coveralls.post": :test,
-        "coveralls.html": :test
       ]
     ]
   end
@@ -36,9 +29,7 @@ defmodule Core.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:credo, "~> 1.6.2", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.1.0", only: :dev, runtime: false},
-      {:excoveralls, "~> 0.14.4", only: :test}
+      {:dialyxir, "~> 1.1.0", only: :dev, runtime: false}
     ]
   end
 end

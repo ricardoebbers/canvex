@@ -34,24 +34,6 @@ defmodule Core.Canvas do
       default_height: 3,
       # can be any char
       default_fill: char()
-
-  ## Examples
-      iex> Core.Canvas.new()
-      %Core.Canvas{
-        cols: 3,
-        rows: 3,
-        values: %{
-          {0, 0} => '.',
-          {0, 1} => '.',
-          {0, 2} => '.',
-          {1, 0} => '.',
-          {1, 1} => '.',
-          {1, 2} => '.',
-          {2, 0} => '.',
-          {2, 1} => '.',
-          {2, 2} => '.'
-        }
-      }
   """
   @spec new :: t | {:error, term()}
   def new do
@@ -166,16 +148,6 @@ defmodule Core.Canvas do
   on the matrix.
 
   The resulting matrix is a list of lists with size `canvas.rows` x `canvas.cols`
-
-  ## Examples
-      iex> canvas = Core.Canvas.new(%{width: 2, height: 4}, '#')
-      iex> Core.Canvas.matrix(canvas)
-      [
-        ['#', '#'],
-        ['#', '#'],
-        ['#', '#'],
-        ['#', '#']
-      ]
   """
   @spec matrix(t) :: list(list(char()))
   def matrix(canvas) do

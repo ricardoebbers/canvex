@@ -1,20 +1,20 @@
 defmodule Core.Draw.Line do
   @moduledoc """
-  Draws vertical or horizontal lines on a canvas.
+  Lines are made of ASCII `chars`, can be `vertical` or `horizontal`, and have a `size`.
   """
   alias Core.{Canvas, Type}
 
   @doc """
-  Draw a vertical line on a `canvas` given a starting `coordinates`, a `size` and a `stroke`
+  Draw a vertical line on a `canvas` given an `origin`, a `size` and a `stroke`
   """
   @spec vertical(Canvas.t(), Type.coordinates(), integer(), charlist()) :: Canvas.t()
-  def vertical(canvas, _starting_coordinates = %{x: start_x, y: start_y}, size, stroke)
+  def vertical(canvas, _origin = %{x: start_x, y: start_y}, size, stroke)
       when size >= 0 do
     coordinates = for y <- start_y..(start_y + size - 1), do: {start_x, y}
     do_draw(coordinates, canvas, stroke)
   end
 
-  def vertical(canvas, _starting_coordinates = %{x: start_x, y: start_y}, size, stroke)
+  def vertical(canvas, _origin = %{x: start_x, y: start_y}, size, stroke)
       when size < 0 do
     coordinates = for y <- (start_y + size + 1)..start_y, do: {start_x, y}
     do_draw(coordinates, canvas, stroke)
@@ -24,13 +24,13 @@ defmodule Core.Draw.Line do
   Draw a horizontal line on a `canvas` given a starting `coordinates`, a `size` and a `stroke`
   """
   @spec horizontal(Canvas.t(), Type.coordinates(), integer(), charlist()) :: Canvas.t()
-  def horizontal(canvas, _starting_coordinates = %{x: start_x, y: start_y}, size, stroke)
+  def horizontal(canvas, _origin = %{x: start_x, y: start_y}, size, stroke)
       when size >= 0 do
     coordinates = for x <- start_x..(start_x + size - 1), do: {x, start_y}
     do_draw(coordinates, canvas, stroke)
   end
 
-  def horizontal(canvas, _starting_coordinates = %{x: start_x, y: start_y}, size, stroke)
+  def horizontal(canvas, _origin = %{x: start_x, y: start_y}, size, stroke)
       when size < 0 do
     coordinates = for x <- (start_x + size + 1)..start_x, do: {x, start_y}
     do_draw(coordinates, canvas, stroke)

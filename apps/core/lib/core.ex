@@ -9,9 +9,7 @@ defmodule Core do
   @type outline :: char()
 
   @spec new_canvas :: canvas
-  def new_canvas do
-    %{}
-  end
+  defdelegate new_canvas, to: Canvas, as: :new
 
   # @spec draw_rectangle(canvas, coordinates, size, fill, outline) :: canvas
   # def draw_rectangle(canvas, coordinates, size, fill, outline) do

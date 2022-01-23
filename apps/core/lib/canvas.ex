@@ -66,7 +66,7 @@ defmodule Core.Canvas do
   def new(%{width: width, height: height}, fill) do
     coordinates = for x <- 0..(width - 1), y <- 0..(height - 1), do: {x, y}
 
-    if !is_nil(fill) and List.ascii_printable?(fill) and length(fill) == 1 do
+    if !is_nil(fill) and is_list(fill) and List.ascii_printable?(fill) and length(fill) == 1 do
       %__MODULE__{
         rows: height,
         cols: width,
@@ -130,16 +130,16 @@ defmodule Core.Canvas do
       }
   """
   @spec put(t, Type.coordinates(), charlist()) :: t
-  def put(canvas = %{rows: rows, cols: cols, values: values}, %{x: x, y: y}, value)
+  def put(canvas = %{rows: rows, cols: cols, values: values}, _coords = %{x: x, y: y}, value)
       when x >= 0 and x < cols and y >= 0 and y < rows do
-    if !is_nil(value) and List.ascii_printable?(value) and length(value) == 1 do
+    if !is_nil(value) and is_list(value) and List.ascii_printable?(value) and length(value) == 1 do
       %{canvas | values: Map.put(values, {x, y}, value)}
     else
       canvas
     end
   end
 
-  def put(canvas, _coordinates, _value), do: canvas
+  def put(canvas, _coords, _value), do: canvas
 
   @doc """
   Converts `canvas` to a matrix of `char`

@@ -15,7 +15,7 @@ defmodule Core.Draw.Rectangle do
   Rectangles can have a `fill`, an `outline` or both.
   """
   @spec call(Canvas.t(), Type.coordinates(), Type.size(), charlist(), charlist()) :: Canvas.t()
-  def call(canvas, _origin, _size, nil, nil), do: canvas
+  def call(canvas, _origin, _size, _fill = nil, _outline = nil), do: canvas
 
   def call(canvas, origin, size, nil, outline) do
     outline_retangle(canvas, origin, size, outline)

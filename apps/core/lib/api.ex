@@ -3,7 +3,7 @@ defmodule Core do
   The public API of the Core application.
   """
   alias Core.{Canvas, Type}
-  alias Core.Draw.Rectangle
+  alias Core.Draw.{FloodFill, Rectangle}
 
   @opaque canvas :: Canvas.t()
   @type coordinates :: Type.coordinates()
@@ -66,7 +66,7 @@ defmodule Core do
         [' ', ' ', ' ', ' ', ' ']
       ]
   """
-  @spec matrix(canvas) :: list(list(char()))
+  @spec matrix(canvas) :: list(list(fill()))
   defdelegate matrix(canvas), to: Canvas
 
   @doc """
@@ -91,8 +91,21 @@ defmodule Core do
   @spec draw_rectangle(canvas, coordinates, size, fill, outline) :: canvas
   defdelegate draw_rectangle(canvas, origin, size, fill, outline), to: Rectangle, as: :call
 
-  # @spec flood_fill(canvas, coordinates, fill) :: canvas
-  # def flood_fill(canvas, coordinates, fill) do
-  #   %{}
-  # end
+  @doc """
+  Fills a contiguous area in a `canvas`, given the origin `coordinates` and a fill `char`.
+
+  ## Examples
+      iex> canvas = Core.new_canvas
+      iex> origin = %{x: 0, y: 0}
+      iex> Core.flood_fill(canvas, origin, 'B') |> Core.matrix()
+      [
+        ['B', 'B', 'B', 'B', 'B'],
+        ['B', 'B', 'B', 'B', 'B'],
+        ['B', 'B', 'B', 'B', 'B'],
+        ['B', 'B', 'B', 'B', 'B'],
+        ['B', 'B', 'B', 'B', 'B']
+      ]
+  """
+  @spec flood_fill(canvas, coordinates, fill) :: canvas
+  defdelegate flood_fill(canvas, origin, fill), to: FloodFill, as: :call
 end

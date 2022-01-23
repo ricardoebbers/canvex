@@ -11,8 +11,7 @@ defmodule Data.MixProject do
       lockfile: "../../mix.lock",
       elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
-      deps: deps(),
-      aliases: aliases()
+      deps: deps()
     ]
   end
 
@@ -30,15 +29,6 @@ defmodule Data.MixProject do
       {:core, in_umbrella: true},
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"}
-    ]
-  end
-
-  defp aliases do
-    [
-      setup: ["deps.get", "ecto.setup"],
-      "ecto.setup": ["ecto.create", "ecto.migrate"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.drop", "ecto.create", "ecto.migrate --quiet", "test"]
     ]
   end
 end

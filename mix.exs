@@ -7,6 +7,7 @@ defmodule Canvex.MixProject do
       version: "0.1.0",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      aliases: aliases(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -26,6 +27,14 @@ defmodule Canvex.MixProject do
     [
       {:credo, "~> 1.6.2", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.14.4", only: :test}
+    ]
+  end
+
+  defp aliases do
+    [
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

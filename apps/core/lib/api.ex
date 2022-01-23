@@ -108,4 +108,8 @@ defmodule Core do
   """
   @spec flood_fill(canvas, coordinates, fill) :: canvas
   defdelegate flood_fill(canvas, origin, fill), to: FloodFill, as: :call
+
+  defdelegate canvas_to_charlist(canvas), to: Canvas, as: :charlist
+
+  defdelegate canvas_from_charlist(charlist, width), to: Canvas, as: :from_charlist
 end

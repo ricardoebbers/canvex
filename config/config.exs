@@ -1,8 +1,8 @@
 import Config
 
 config :core, Core.Canvas,
-  default_width: 5,
-  default_height: 5,
+  default_width: 15,
+  default_height: 15,
   default_fill: ' '
 
 config :data,

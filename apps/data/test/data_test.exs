@@ -1,4 +1,4 @@
 defmodule DataTest do
-  use ExUnit.Case
+  use Data.RepoCase
   doctest Data
 end

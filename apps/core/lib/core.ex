@@ -5,7 +5,7 @@ defmodule Core do
   alias Core.{Canvas, Type}
   alias Core.Draw.{FloodFill, Rectangle}
 
-  @opaque canvas :: Canvas.t()
+  @type canvas :: Canvas.t()
   @type coordinates :: Type.coordinates()
   @type size :: Type.size()
   @type fill :: charlist()
@@ -50,6 +50,9 @@ defmodule Core do
   """
   @spec new_canvas :: canvas
   defdelegate new_canvas, to: Canvas, as: :new
+
+  @spec new_canvas(size, fill) :: canvas
+  defdelegate new_canvas(size, fill), to: Canvas, as: :new
 
   @doc """
   Converts `canvas` to a matrix of `char`

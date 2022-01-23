@@ -36,6 +36,12 @@ defmodule Data.Schema.Canvas do
     |> validate_change(:charlist, &ascii_printable/2)
   end
 
+  def update_changeset(schema = %CanvasSchema{}, canvas) do
+    {charlist, width} = Core.canvas_to_charlist(canvas)
+
+    changeset(schema, %{charlist: charlist, width: width})
+  end
+
   defp ascii_printable(:charlist, charlist) do
     if List.ascii_printable?(charlist) do
       []

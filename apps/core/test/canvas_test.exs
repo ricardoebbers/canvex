@@ -251,13 +251,20 @@ defmodule Core.CanvasTest do
 
   describe "from_myers_difference/2" do
     test "should create a new canvas" do
-      myers_difference = [del: 'aaa', ins: 'bbb']
+      myers_difference = [eq: 'aaa', ins: 'ccc', del: 'bbb']
 
-      assert %Canvas{
-               cols: 1,
-               rows: 3,
-               values: %{{0, 0} => 'b', {0, 1} => 'b', {0, 2} => 'b'}
-             } == Canvas.from_myers_difference(myers_difference, 1)
+      assert %Core.Canvas{
+               cols: 3,
+               rows: 2,
+               values: %{
+                 {0, 0} => 'a',
+                 {0, 1} => 'c',
+                 {1, 0} => 'a',
+                 {1, 1} => 'c',
+                 {2, 0} => 'a',
+                 {2, 1} => 'c'
+               }
+             } == Canvas.from_myers_difference(myers_difference, 3)
     end
   end
 end

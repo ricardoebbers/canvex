@@ -79,5 +79,10 @@ defmodule Core.Draw.FloodFillTest do
       assert canvas |> Core.matrix() ==
                FloodFill.call(canvas, %{x: 4, y: 4}, '0') |> Core.matrix()
     end
+
+    test "should do nothing when trying to fill out of bounds", %{canvas: canvas} do
+      assert canvas |> Core.matrix() ==
+               FloodFill.call(canvas, %{x: -4, y: -4}, '0') |> Core.matrix()
+    end
   end
 end

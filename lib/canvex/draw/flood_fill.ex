@@ -6,8 +6,8 @@ defmodule Canvex.Draw.FloodFill do
   """
   alias Canvex.Draw.Canvas
 
-  def call(canvas, %{origin: origin, fill: fill}) do
-    do_fill(canvas, fill, Canvas.get_value_at(canvas, origin), [origin])
+  def call(canvas, %{x: x, y: y, fill: fill}) do
+    do_fill(canvas, fill, Canvas.get_value_at(canvas, {x, y}), [{x, y}])
   end
 
   defp do_fill(canvas, _fill, _target_fill, []) do

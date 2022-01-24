@@ -38,7 +38,7 @@ defmodule Canvex.Canvas.UpdateTest do
     end
 
     test "should store and return a canvas given another canvas", %{canvas: canvas = %{id: id}} do
-      changed_canvas = Line.horizontal(canvas, %{origin: {0, 0}, size: 2, stroke: '-'})
+      changed_canvas = Line.horizontal(canvas, %{x: 0, y: 0, size: 2, stroke: '-'})
 
       assert {:ok,
               %Canvas{

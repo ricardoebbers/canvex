@@ -10,7 +10,7 @@ defmodule Canvex.Draw.LineTest do
 
   describe "vertical/2" do
     test "should draw a vertical line", %{canvas: canvas} do
-      args = %{origin: {2, 2}, size: 2, stroke: '|'}
+      args = %{x: 2, y: 2, size: 2, stroke: '|'}
 
       assert [
                '     ',
@@ -22,7 +22,7 @@ defmodule Canvex.Draw.LineTest do
     end
 
     test "should draw up given negative size", %{canvas: canvas} do
-      args = %{origin: {2, 2}, size: -2, stroke: '|'}
+      args = %{x: 2, y: 2, size: -2, stroke: '|'}
 
       assert [
                '     ',
@@ -34,7 +34,7 @@ defmodule Canvex.Draw.LineTest do
     end
 
     test "should not draw past canvas boundaries", %{canvas: canvas} do
-      args = %{origin: {2, 2}, size: 5, stroke: '|'}
+      args = %{x: 2, y: 2, size: 5, stroke: '|'}
 
       assert [
                '     ',
@@ -46,7 +46,7 @@ defmodule Canvex.Draw.LineTest do
     end
 
     test "should return error when trying to draw non-ascii printable chars", %{canvas: canvas} do
-      args = %{origin: {2, 2}, size: 3, stroke: 'ñ'}
+      args = %{x: 2, y: 2, size: 3, stroke: 'ñ'}
 
       assert {:error, _reason} = Line.vertical(canvas, args)
     end
@@ -54,7 +54,7 @@ defmodule Canvex.Draw.LineTest do
 
   describe "horizontal/2" do
     test "should draw a horizontal line", %{canvas: canvas} do
-      args = %{origin: {2, 2}, size: 2, stroke: '-'}
+      args = %{x: 2, y: 2, size: 2, stroke: '-'}
 
       assert [
                '     ',
@@ -66,7 +66,7 @@ defmodule Canvex.Draw.LineTest do
     end
 
     test "should draw to the left given negative size", %{canvas: canvas} do
-      args = %{origin: {2, 2}, size: -2, stroke: '-'}
+      args = %{x: 2, y: 2, size: -2, stroke: '-'}
 
       assert [
                '     ',
@@ -78,7 +78,7 @@ defmodule Canvex.Draw.LineTest do
     end
 
     test "should not draw past canvas boundaries", %{canvas: canvas} do
-      args = %{origin: {2, 2}, size: 5, stroke: '-'}
+      args = %{x: 2, y: 2, size: 5, stroke: '-'}
 
       assert [
                '     ',
@@ -90,7 +90,7 @@ defmodule Canvex.Draw.LineTest do
     end
 
     test "should return error when trying to draw non-ascii printable chars", %{canvas: canvas} do
-      args = %{origin: {2, 2}, size: 2, stroke: 'ñ'}
+      args = %{x: 2, y: 2, size: 2, stroke: 'ñ'}
 
       assert {:error, _reason} = Line.horizontal(canvas, args)
     end

@@ -10,7 +10,7 @@ defmodule Canvex.Draw.RectangleTest do
 
   describe "call/2" do
     test "should draw a rectangle outline", %{canvas: canvas} do
-      args = %{origin: {1, 1}, width: 3, height: 3, outline: 'x'}
+      args = %{x: 1, y: 1, width: 3, height: 3, outline: 'x'}
 
       assert [
                '     ',
@@ -25,7 +25,7 @@ defmodule Canvex.Draw.RectangleTest do
     end
 
     test "should draw a rectangle with fill", %{canvas: canvas} do
-      args = %{origin: {1, 1}, width: 3, height: 3, fill: 'o'}
+      args = %{x: 1, y: 1, width: 3, height: 3, fill: 'o'}
 
       assert [
                '     ',
@@ -40,7 +40,7 @@ defmodule Canvex.Draw.RectangleTest do
     end
 
     test "should draw a rectangle with fill and outline", %{canvas: canvas} do
-      args = %{origin: {1, 1}, width: 3, height: 3, fill: 'o', outline: 'x'}
+      args = %{x: 1, y: 1, width: 3, height: 3, fill: 'o', outline: 'x'}
 
       assert [
                '     ',
@@ -55,8 +55,8 @@ defmodule Canvex.Draw.RectangleTest do
     end
 
     test "should draw multiple rectangles", %{canvas: canvas} do
-      args_r1 = %{origin: {0, 0}, width: 3, height: 3, outline: 'x'}
-      args_r2 = %{origin: {2, 3}, width: 3, height: 2, fill: 'o'}
+      args_r1 = %{x: 0, y: 0, width: 3, height: 3, outline: 'x'}
+      args_r2 = %{x: 2, y: 3, width: 3, height: 2, fill: 'o'}
 
       assert [
                'xxx  ',
@@ -72,8 +72,8 @@ defmodule Canvex.Draw.RectangleTest do
     end
 
     test "should draw overlapping rectangles", %{canvas: canvas} do
-      args_r1 = %{origin: {0, 0}, width: 4, height: 4, outline: 'x'}
-      args_r2 = %{origin: {2, 1}, width: 3, height: 4, fill: 'o'}
+      args_r1 = %{x: 0, y: 0, width: 4, height: 4, outline: 'x'}
+      args_r2 = %{x: 2, y: 1, width: 3, height: 4, fill: 'o'}
 
       assert [
                'xxxx ',
@@ -89,7 +89,7 @@ defmodule Canvex.Draw.RectangleTest do
     end
 
     test "should do nothing if neither fill nor outline are passed", %{canvas: canvas} do
-      args = %{origin: {1, 1}, width: 3, height: 3}
+      args = %{x: 1, y: 1, width: 3, height: 3}
 
       assert {:error, _reason} = Rectangle.call(canvas, args)
     end

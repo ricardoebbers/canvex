@@ -27,7 +27,7 @@ defmodule Canvex.Draw.Canvas do
     |> build(width)
   end
 
-  def new(_), do: {:error, :bad_request}
+  def new(_), do: :error
 
   def get_value_at(canvas, {x, y}) do
     Map.get(canvas.values, {x, y})

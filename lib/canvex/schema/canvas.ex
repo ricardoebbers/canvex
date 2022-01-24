@@ -1,10 +1,24 @@
 defmodule Canvex.Schema.Canvas do
+  @moduledoc """
+  Schema for `Canvex.Draw.Canvas` validations and database interaction.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 
   alias Canvex.Draw.Canvas, as: DrawCanvas
   alias Canvex.Schema.Canvas
   alias Canvex.Type.ASCIIPrintable
+
+  @type t :: %__MODULE__{
+          id: Ecto.UUID,
+          charlist: {:array, ASCIIPrintable},
+          fill: ASCIIPrintable,
+          height: :integer,
+          values: :map,
+          width: :integer,
+          user_id: Ecto.UUID
+        }
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id

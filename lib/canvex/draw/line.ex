@@ -1,4 +1,12 @@
 defmodule Canvex.Draw.Line do
+  @moduledoc """
+  Draws `lines` onto `canvas`.
+
+  Can draw both `vertical` and `horizontal` lines.
+  By default, draws to the right and down from the origin,
+  but can draw to the left and up by passing a negative `size`.
+  """
+
   alias Canvex.Draw.Canvas
 
   def vertical(canvas, %{x: start_x, y: start_y, size: size, stroke: stroke})

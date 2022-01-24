@@ -1,4 +1,11 @@
 defmodule Canvex.Draw.Rectangle do
+  @moduledoc """
+  Draws `rectangles` onto `canvas`.
+
+  Uses the `Canvex.Draw.Line` module to draw four lines for
+  each __side__ of the rectangle, and __fills__ the rectangles by
+  drawing parallel vertical lines.
+  """
   alias Canvex.Draw.Line
 
   require Logger
@@ -19,7 +26,7 @@ defmodule Canvex.Draw.Rectangle do
 
   def call(_canvas, args) do
     Logger.error("Missing fill and outline. Can't draw a rectangle. args: #{inspect(args)}")
-    {:error, "Missing fill and outline"}
+    {:error, :bad_request}
   end
 
   defp outline_rectangle(canvas, %{

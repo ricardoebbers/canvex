@@ -1,4 +1,6 @@
 defmodule Canvex.Canvas.Get do
+  @moduledoc false
+
   alias Canvex.Repo
   alias Canvex.Schema.Canvas
 

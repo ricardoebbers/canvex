@@ -10,7 +10,7 @@ defmodule CanvexWeb.FallbackController do
     call(conn, {:error, changeset})
   end
 
-  def call(conn, changeset = {:error, %Ecto.Changeset{errors: errors}}) do
+  def call(conn, {:error, changeset = %Ecto.Changeset{errors: errors}}) do
     Logger.error([
       "Error unprocessable_entity ecto changeset. ",
       "request_path: #{inspect(conn.request_path)}, ",

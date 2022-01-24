@@ -1,4 +1,8 @@
 defmodule CanvexWeb.Commands.Draw do
+  @moduledoc """
+  Validates draw commands params before sending them to the domain API.
+  """
+
   import Ecto.Changeset
 
   @valid_commands ["flood_fill", "rectangle"]

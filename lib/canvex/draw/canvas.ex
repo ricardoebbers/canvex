@@ -1,4 +1,8 @@
 defmodule Canvex.Draw.Canvas do
+  @moduledoc """
+  ASCII art drawing canvas
+  """
+
   alias Canvex.Draw.Stroke
 
   defstruct width: 0,

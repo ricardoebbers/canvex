@@ -1,4 +1,10 @@
 defmodule Canvex.Draw.Stroke do
+  @moduledoc """
+  Validate and sanitize all __strokes__ to be made on the `canvas`.
+
+  Tries it's best to convert the `char` input into an `ASCII` printable representation.
+  """
+
   def ascii_printable(char) do
     if valid?(char), do: sanitize(char), else: {:error, :not_ascii_printable}
   end

@@ -1,4 +1,8 @@
 defmodule Canvex.Type.ASCIIPrintable do
+  @moduledoc """
+  Casts, loads and dumps ASCII printable characters.
+  """
+
   use Ecto.Type
 
   alias Canvex.Draw.Stroke

@@ -36,9 +36,9 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :canvex, Core.Canvas,
-  default_width: 5,
-  default_height: 5,
+config :canvex, Canvex.Canvas.CartesianPlane,
+  default_width: 15,
+  default_height: 15,
   default_fill: ' '
 
 # Import environment specific config. This must remain at the bottom

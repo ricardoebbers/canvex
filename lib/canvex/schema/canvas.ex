@@ -9,7 +9,7 @@ defmodule Canvex.Schema.Canvas do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   @fields ~w(charlist fill height values width user_id)a
-  @required_new ~w(height user_id width)a
+  @required_new ~w(fill height user_id width)a
   @required_existing ~w(charlist user_id width)a
   schema "canvas" do
     field :charlist, {:array, ASCIIPrintable}

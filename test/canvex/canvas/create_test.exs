@@ -46,6 +46,7 @@ defmodule Canvex.Canvas.CreateTest do
       assert {:error,
               %Ecto.Changeset{
                 errors: [
+                  fill: {"can't be blank", [validation: :required]},
                   height: {"can't be blank", [validation: :required]},
                   user_id: {"can't be blank", [validation: :required]},
                   width: {"can't be blank", [validation: :required]}

@@ -41,7 +41,7 @@ defmodule Canvex.Draw.CanvasTest do
     test "should return error when trying to create canvas with null fill" do
       args = %{width: 1, height: 2, fill: nil}
 
-      assert :error = Canvas.new(args)
+      assert {:error, _reason} = Canvas.new(args)
     end
 
     test "should return error when trying to create canvas with '' fill" do

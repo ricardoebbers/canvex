@@ -31,7 +31,7 @@ defmodule Canvex.Draw.Canvas do
 
   def new(params) do
     Logger.error("Unexpected params, unable to create a canvas. params: #{inspect(params)}")
-    :error
+    {:error, :bad_request}
   end
 
   def get_value_at(canvas, {x, y}) do

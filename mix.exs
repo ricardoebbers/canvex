@@ -17,6 +17,9 @@ defmodule Canvex.MixProject do
         "coveralls.detail": :test,
         "coveralls.post": :test,
         "coveralls.html": :test
+      ],
+      dialyzer: [
+        plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
       ]
     ]
   end
@@ -55,7 +58,10 @@ defmodule Canvex.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:excoveralls, "~> 0.10", only: :test}
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.10", only: :test},
+      {:dialyxir, "~> 1.0", only: :dev, runtime: false},
+      {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -71,7 +77,8 @@ defmodule Canvex.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.deploy": ["esbuild default --minify", "phx.digest"]
+      "assets.deploy": ["esbuild default --minify", "phx.digest"],
+      quality: ["dialyzer", "credo --strict", "test.watch --stale"]
     ]
   end
 end

@@ -16,20 +16,23 @@ defmodule Canvex.DataCase do
 
   use ExUnit.CaseTemplate
 
+  alias Canvex.Repo
+  alias Ecto.Adapters.SQL.Sandbox
+
   using do
     quote do
-      alias Canvex.Repo
+      alias Canvex.{DataCase, Repo}
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import Canvex.DataCase
+      import DataCase
     end
   end
 
   setup tags do
-    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Canvex.Repo, shared: not tags[:async])
-    on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
+    pid = Sandbox.start_owner!(Repo, shared: not tags[:async])
+    on_exit(fn -> Sandbox.stop_owner(pid) end)
     :ok
   end
 

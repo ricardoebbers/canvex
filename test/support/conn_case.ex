@@ -17,6 +17,9 @@ defmodule CanvexWeb.ConnCase do
 
   use ExUnit.CaseTemplate
 
+  alias Canvex.Repo
+  alias Ecto.Adapters.SQL.Sandbox
+
   using do
     quote do
       # Import conveniences for testing with connections
@@ -32,8 +35,8 @@ defmodule CanvexWeb.ConnCase do
   end
 
   setup tags do
-    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Canvex.Repo, shared: not tags[:async])
-    on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
+    pid = Sandbox.start_owner!(Repo, shared: not tags[:async])
+    on_exit(fn -> Sandbox.stop_owner(pid) end)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 end

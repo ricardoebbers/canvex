@@ -56,21 +56,12 @@ defmodule Canvex.Canvas.UpdateTest do
         "charlist" => 'não'
       }
 
-      assert {:error,
-              %Ecto.Changeset{
-                errors: [
-                  width:
-                    {"must be greater than %{number}",
-                     [validation: :number, kind: :greater_than, number: 0]},
-                  height:
-                    {"must be greater than %{number}",
-                     [validation: :number, kind: :greater_than, number: 0]},
-                  charlist:
-                    {"is invalid",
-                     [type: {:array, Canvex.Type.ASCIIPrintable}, validation: :cast]},
-                  fill: {"is invalid", [type: Canvex.Type.ASCIIPrintable, validation: :cast]}
-                ]
-              }} = Update.call(attrs)
+      assert %{
+               charlist: ["is invalid"],
+               fill: ["is invalid"],
+               height: ["must be greater than 0"],
+               width: ["must be greater than 0"]
+             } = attrs |> Update.call() |> errors_on()
     end
 
     test "should return error bad request when missing id" do

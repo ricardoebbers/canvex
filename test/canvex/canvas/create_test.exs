@@ -43,15 +43,12 @@ defmodule Canvex.Canvas.CreateTest do
     test "should return error when there are missing parameters" do
       canvas = Create.call(%{})
 
-      assert {:error,
-              %Ecto.Changeset{
-                errors: [
-                  fill: {"can't be blank", [validation: :required]},
-                  height: {"can't be blank", [validation: :required]},
-                  user_id: {"can't be blank", [validation: :required]},
-                  width: {"can't be blank", [validation: :required]}
-                ]
-              }} = canvas
+      assert %{
+               fill: ["can't be blank"],
+               height: ["can't be blank"],
+               user_id: ["can't be blank"],
+               width: ["can't be blank"]
+             } = errors_on(canvas)
     end
 
     test "should return error when fill is invalid" do
@@ -64,12 +61,7 @@ defmodule Canvex.Canvas.CreateTest do
         }
         |> Create.call()
 
-      assert {:error,
-              %Ecto.Changeset{
-                errors: [
-                  fill: {"is invalid", [type: Canvex.Type.ASCIIPrintable, validation: :cast]}
-                ]
-              }} = canvas
+      assert %{fill: ["is invalid"]} = errors_on(canvas)
     end
 
     test "should return error when there are invalid chars on charlist" do
@@ -81,14 +73,7 @@ defmodule Canvex.Canvas.CreateTest do
         }
         |> Create.call()
 
-      assert {:error,
-              %Ecto.Changeset{
-                errors: [
-                  charlist:
-                    {"is invalid",
-                     [type: {:array, Canvex.Type.ASCIIPrintable}, validation: :cast]}
-                ]
-              }} = canvas
+      assert %{charlist: ["is invalid"]} = errors_on(canvas)
     end
 
     test "should return errors when height or width are not positive" do
@@ -101,17 +86,8 @@ defmodule Canvex.Canvas.CreateTest do
         }
         |> Create.call()
 
-      assert {:error,
-              %Ecto.Changeset{
-                errors: [
-                  width:
-                    {"must be greater than %{number}",
-                     [validation: :number, kind: :greater_than, number: 0]},
-                  height:
-                    {"must be greater than %{number}",
-                     [validation: :number, kind: :greater_than, number: 0]}
-                ]
-              }} = canvas
+      assert %{height: ["must be greater than 0"], width: ["must be greater than 0"]} =
+               errors_on(canvas)
     end
 
     test "should return error if generated canvas have zero height" do
@@ -123,14 +99,7 @@ defmodule Canvex.Canvas.CreateTest do
         }
         |> Create.call()
 
-      assert {:error,
-              %Ecto.Changeset{
-                errors: [
-                  height:
-                    {"must be greater than %{number}",
-                     [validation: :number, kind: :greater_than, number: 0]}
-                ]
-              }} = canvas
+      assert %{height: ["must be greater than 0"]} = errors_on(canvas)
     end
   end
 end

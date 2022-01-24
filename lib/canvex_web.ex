@@ -21,6 +21,8 @@ defmodule CanvexWeb do
     quote do
       use Phoenix.Controller, namespace: CanvexWeb
 
+      require Logger
+
       import Plug.Conn
       import CanvexWeb.Gettext
       alias CanvexWeb.Router.Helpers, as: Routes

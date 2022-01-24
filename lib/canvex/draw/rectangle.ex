@@ -1,6 +1,8 @@
 defmodule Canvex.Draw.Rectangle do
   alias Canvex.Draw.Line
 
+  require Logger
+
   def call(canvas, args = %{fill: _fill, outline: _outline}) do
     canvas
     |> fill_rectangle(args)
@@ -15,7 +17,10 @@ defmodule Canvex.Draw.Rectangle do
     fill_rectangle(canvas, args)
   end
 
-  def call(_canvas, _args), do: {:error, "Missing fill and outline"}
+  def call(_canvas, args) do
+    Logger.error("Missing fill and outline. Can't draw a rectangle. args: #{inspect(args)}")
+    {:error, "Missing fill and outline"}
+  end
 
   defp outline_rectangle(canvas, %{
          x: start_x,

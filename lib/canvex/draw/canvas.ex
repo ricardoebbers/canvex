@@ -6,6 +6,8 @@ defmodule Canvex.Draw.Canvas do
             values: %{{0, 0} => 0},
             charlist: []
 
+  require Logger
+
   def new do
     params = default_params()
     build(params[:default_width], params[:default_height], params[:default_fill])
@@ -27,7 +29,10 @@ defmodule Canvex.Draw.Canvas do
     end
   end
 
-  def new(_), do: :error
+  def new(params) do
+    Logger.error("Unexpected params, unable to create a canvas. params: #{inspect(params)}")
+    :error
+  end
 
   def get_value_at(canvas, {x, y}) do
     Map.get(canvas.values, {x, y})

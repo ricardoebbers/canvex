@@ -78,7 +78,7 @@ defmodule Canvex.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.deploy": ["esbuild default --minify", "phx.digest"],
-      quality: ["dialyzer", "credo --strict", "test.watch --stale"]
+      quality: ["format", "dialyzer", "credo --strict", "test.watch --stale"]
     ]
   end
 end

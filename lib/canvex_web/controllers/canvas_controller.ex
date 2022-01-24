@@ -2,7 +2,7 @@ defmodule CanvexWeb.CanvasController do
   use CanvexWeb, :controller
 
   alias Canvex.Canvases
-  alias Canvex.Canvases.Canvas
+  alias Canvex.Schemas.Canvas
 
   action_fallback CanvexWeb.FallbackController
 

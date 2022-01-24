@@ -3,7 +3,7 @@ defmodule CanvexWeb.CanvasControllerTest do
 
   import Canvex.CanvasesFixtures
 
-  alias Canvex.Canvases.Canvas
+  alias Canvex.Schemas.Canvas
 
   @create_attrs %{
     height: 42,

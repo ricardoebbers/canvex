@@ -1,4 +1,4 @@
-defmodule Canvex.Canvases.Canvas do
+defmodule Canvex.Schemas.Canvas do
   use Ecto.Schema
   import Ecto.Changeset
 

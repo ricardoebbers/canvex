@@ -6,7 +6,7 @@ defmodule Canvex.Canvases do
   import Ecto.Query, warn: false
   alias Canvex.Repo
 
-  alias Canvex.Canvases.Canvas
+  alias Canvex.Schemas.Canvas
 
   @doc """
   Returns the list of canvases.

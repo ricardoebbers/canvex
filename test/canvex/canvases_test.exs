@@ -4,7 +4,7 @@ defmodule Canvex.CanvasesTest do
   alias Canvex.Canvases
 
   describe "canvases" do
-    alias Canvex.Canvases.Canvas
+    alias Canvex.Schemas.Canvas
 
     import Canvex.CanvasesFixtures
 

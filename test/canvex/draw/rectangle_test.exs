@@ -39,6 +39,21 @@ defmodule Canvex.Draw.RectangleTest do
                |> Matrix.from_canvas()
     end
 
+    test "should draw a rectangle with fill and outline", %{canvas: canvas} do
+      args = %{origin: {1, 1}, width: 3, height: 3, fill: 'o', outline: 'x'}
+
+      assert [
+               '     ',
+               ' xxx ',
+               ' xox ',
+               ' xxx ',
+               '     '
+             ] =
+               canvas
+               |> Rectangle.call(args)
+               |> Matrix.from_canvas()
+    end
+
     test "should draw multiple rectangles", %{canvas: canvas} do
       args_r1 = %{origin: {0, 0}, width: 3, height: 3, outline: 'x'}
       args_r2 = %{origin: {2, 3}, width: 3, height: 2, fill: 'o'}

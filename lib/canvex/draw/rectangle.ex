@@ -1,18 +1,18 @@
 defmodule Canvex.Draw.Rectangle do
   alias Canvex.Draw.Line
 
+  def call(canvas, args = %{fill: _fill, outline: _outline}) do
+    canvas
+    |> fill_retangle(args)
+    |> outline_retangle(args)
+  end
+
   def call(canvas, args = %{outline: _outline}) do
     outline_retangle(canvas, args)
   end
 
   def call(canvas, args = %{fill: _fill}) do
     fill_retangle(canvas, args)
-  end
-
-  def call(canvas, args = %{fill: _fill, outline: _outline}) do
-    canvas
-    |> fill_retangle(args)
-    |> outline_retangle(args)
   end
 
   def call(_canvas, _args), do: {:error, "Missing fill and outline"}

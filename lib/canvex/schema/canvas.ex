@@ -3,6 +3,7 @@ defmodule Canvex.Schema.Canvas do
   import Ecto.Changeset
 
   alias Canvex.Draw.Canvas, as: DrawCanvas
+  alias Canvex.Schema.Canvas
   alias Canvex.Type.ASCIIPrintable
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -21,6 +22,12 @@ defmodule Canvex.Schema.Canvas do
     timestamps()
   end
 
+  def changeset(canvas, other = %Canvas{}) do
+    attrs = get_attrs(other)
+
+    changeset(canvas, attrs)
+  end
+
   @doc false
   def changeset(canvas, attrs) do
     canvas
@@ -31,9 +38,7 @@ defmodule Canvex.Schema.Canvas do
   end
 
   def load_values(canvas = %{charlist: _charlist, width: _width}) do
-    canvas
-    |> DrawCanvas.new()
-    |> case do
+    case DrawCanvas.new(canvas) do
       %DrawCanvas{values: values, charlist: charlist} ->
         %{canvas | values: values, charlist: charlist}
     end
@@ -48,28 +53,34 @@ defmodule Canvex.Schema.Canvas do
   end
 
   defp do_validate_input(canvas, attrs, required) do
-    fields =
-      (@fields ++ required)
-      |> MapSet.new()
-      |> Enum.to_list()
-
     canvas
-    |> cast(attrs, fields)
+    |> cast(attrs, @fields)
     |> validate_required(required)
   end
 
   defp validate_draw(canvas = %{valid?: false}), do: canvas
 
-  defp validate_draw(canvas = %{changes: changes}) do
-    case DrawCanvas.new(changes) do
-      %DrawCanvas{values: values, charlist: charlist, height: height} ->
-        canvas
-        |> put_change(:values, values)
-        |> put_change(:charlist, charlist)
-        |> put_change(:height, height)
-
-      _ ->
-        canvas
+  defp validate_draw(canvas = %{data: data, changes: changes}) do
+    data
+    |> get_attrs()
+    |> Map.merge(changes)
+    |> DrawCanvas.new()
+    |> case do
+      draw_canvas = %DrawCanvas{} -> put_changes(canvas, draw_canvas)
+      _ -> canvas
     end
+  end
+
+  defp get_attrs(canvas) do
+    @fields
+    |> Enum.map(fn key -> {key, Map.get(canvas, key)} end)
+    |> Map.new()
+  end
+
+  defp put_changes(canvas, draw_canvas) do
+    canvas
+    |> put_change(:values, draw_canvas.values)
+    |> put_change(:charlist, draw_canvas.charlist)
+    |> put_change(:height, draw_canvas.height)
   end
 end

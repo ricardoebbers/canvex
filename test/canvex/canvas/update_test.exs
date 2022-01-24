@@ -2,39 +2,21 @@ defmodule Canvex.Canvas.UpdateTest do
   use Canvex.DataCase
 
   alias Canvex.Canvas.{Create, Update}
+  alias Canvex.Draw.Line
   alias Canvex.Schema.Canvas
 
   describe "call/1" do
     setup do
       {:ok, canvas} =
         %{
-          "width" => 5,
-          "height" => 5,
+          "width" => 3,
+          "height" => 3,
           "fill" => ' ',
           "user_id" => Ecto.UUID.generate()
         }
         |> Create.call()
 
       %{canvas: canvas}
-    end
-
-    test "should store and return a filled canvas", %{canvas: %{id: id}} do
-      updated_canvas =
-        %{
-          "id" => id,
-          "width" => 3,
-          "height" => 3,
-          "fill" => '_'
-        }
-        |> Update.call()
-
-      assert {:ok,
-              %Canvas{
-                charlist: '_________',
-                height: 3,
-                id: ^id,
-                width: 3
-              }} = updated_canvas
     end
 
     test "should store and return a canvas given a charlist and width", %{canvas: %{id: id}} do
@@ -53,6 +35,16 @@ defmodule Canvex.Canvas.UpdateTest do
                 id: ^id,
                 width: 3
               }} = updated_canvas
+    end
+
+    test "should store and return a canvas given another canvas", %{canvas: canvas = %{id: id}} do
+      changed_canvas = Line.horizontal(canvas, %{origin: {0, 0}, size: 2, stroke: '-'})
+
+      assert {:ok,
+              %Canvas{
+                id: ^id,
+                charlist: '--       '
+              }} = Update.call(changed_canvas)
     end
 
     test "should return errors when passed invalid attrs", %{canvas: %{id: id}} do

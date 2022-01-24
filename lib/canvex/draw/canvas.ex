@@ -11,6 +11,12 @@ defmodule Canvex.Draw.Canvas do
     build(params[:default_width], params[:default_height], params[:default_fill])
   end
 
+  def new(%{width: width, charlist: charlist}) when width > 0 and is_list(charlist) do
+    charlist
+    |> Enum.map(&Stroke.ascii_printable/1)
+    |> build(width)
+  end
+
   def new(%{width: width, height: height, fill: fill})
       when width > 0 and height > 0 and not is_nil(fill) do
     fill
@@ -19,12 +25,6 @@ defmodule Canvex.Draw.Canvas do
       error = {:error, _reason} -> error
       fill -> build(width, height, fill)
     end
-  end
-
-  def new(%{width: width, charlist: charlist}) when width > 0 and is_list(charlist) do
-    charlist
-    |> Enum.map(&Stroke.ascii_printable/1)
-    |> build(width)
   end
 
   def new(_), do: :error

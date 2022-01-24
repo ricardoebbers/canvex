@@ -11,7 +11,7 @@ defmodule Canvex.Type.ASCIIPrintable do
     end
   end
 
-  def load(char), do: char
+  def load(char), do: {:ok, char}
 
   def dump(char), do: {:ok, Stroke.ascii_printable(char)}
 end

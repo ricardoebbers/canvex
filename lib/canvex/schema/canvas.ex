@@ -34,8 +34,8 @@ defmodule Canvex.Schema.Canvas do
     canvas
     |> DrawCanvas.new()
     |> case do
-      %{values: values, charlist: charlist} -> %{canvas | values: values, charlist: charlist}
-      error = {:error, _reason} -> error
+      %DrawCanvas{values: values, charlist: charlist} ->
+        %{canvas | values: values, charlist: charlist}
     end
   end
 

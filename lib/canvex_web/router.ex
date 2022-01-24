@@ -20,6 +20,12 @@ defmodule CanvexWeb.Router do
     get "/", PageController, :index
   end
 
+  scope "/api", CanvexWeb do
+    pipe_through :api
+
+    resources "/canvas", CanvasController, except: [:new, :edit]
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", CanvexWeb do
   #   pipe_through :api

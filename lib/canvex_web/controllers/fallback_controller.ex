@@ -6,7 +6,10 @@ defmodule CanvexWeb.FallbackController do
   """
   use CanvexWeb, :controller
 
-  # This clause handles errors returned by Ecto's insert/update/delete.
+  def call(conn, %Ecto.Changeset{valid?: false} = changeset) do
+    call(conn, {:error, changeset})
+  end
+
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn
     |> put_status(:unprocessable_entity)
@@ -14,11 +17,24 @@ defmodule CanvexWeb.FallbackController do
     |> render("error.json", changeset: changeset)
   end
 
-  # This clause is an example of how to handle resources that cannot be found.
   def call(conn, {:error, :not_found}) do
     conn
     |> put_status(:not_found)
     |> put_view(CanvexWeb.ErrorView)
     |> render(:"404")
+  end
+
+  def call(conn, {:error, :bad_request}) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(CanvexWeb.ErrorView)
+    |> render(:"400")
+  end
+
+  def call(conn, {:error, :not_ascii_printable}) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(CanvexWeb.ErrorView)
+    |> render("error.json", reason: "Char provided is not ASCII.")
   end
 end

@@ -23,7 +23,8 @@ defmodule CanvexWeb.Router do
   scope "/api", CanvexWeb do
     pipe_through :api
 
-    resources "/canvas", CanvasController, except: [:new, :edit]
+    resources "/canvas", CanvasController, only: [:create, :show]
+    put "/canvas/:id/draw", CanvasController, :draw
   end
 
   # Other scopes may use custom stacks.

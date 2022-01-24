@@ -1,6 +1,6 @@
 defmodule Canvex.Draw.Stroke do
   def ascii_printable(char) do
-    if valid?(char), do: sanitize(char), else: {:error, "Must be an ASCII printable char"}
+    if valid?(char), do: sanitize(char), else: {:error, :not_ascii_printable}
   end
 
   defp valid?(char = [_]), do: List.ascii_printable?(char)

@@ -15,7 +15,11 @@ defmodule CanvexWeb.CanvasView do
       id: canvas.id,
       width: canvas.width,
       height: canvas.height,
-      values: canvas.values,
+      charlist:
+        canvas.charlist
+        |> List.to_string()
+        |> String.codepoints()
+        |> Enum.chunk_every(canvas.width),
       user_id: canvas.user_id
     }
   end

@@ -19,7 +19,8 @@ defmodule CanvexWeb.CanvasView do
         canvas.charlist
         |> List.to_string()
         |> String.codepoints()
-        |> Enum.chunk_every(canvas.width),
+        |> Enum.chunk_every(canvas.width)
+        |> Enum.map(&Enum.join/1),
       user_id: canvas.user_id
     }
   end

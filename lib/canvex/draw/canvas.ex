@@ -34,6 +34,21 @@ defmodule Canvex.Draw.Canvas do
     {:error, message}
   end
 
+  def values_from_charlist(%{width: width, charlist: charlist})
+      when width > 0 and is_list(charlist) do
+    charlist
+    |> Enum.map(&Stroke.ascii_printable/1)
+    |> Stream.with_index()
+    |> Stream.map(fn {char, index} -> {{rem(index, width), div(index, width)}, char} end)
+    |> Map.new()
+  end
+
+  def values_from_charlist(params) do
+    message = "Unexpected params, unable to create a canvas."
+    Logger.error([message, " params: #{inspect(params)}"])
+    {:error, message}
+  end
+
   def get_value_at(canvas, {x, y}) do
     Map.get(canvas.values, {x, y})
   end

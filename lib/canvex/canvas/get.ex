@@ -30,11 +30,8 @@ defmodule Canvex.Canvas.Get do
     end
   end
 
-  defp load_values(canvas = %{charlist: _charlist, width: _width}) do
-    case DrawCanvas.new(canvas) do
-      %DrawCanvas{values: values, charlist: charlist} ->
-        {:ok, %{canvas | values: values, charlist: charlist}}
-
+  defp load_values(canvas = %{charlist: charlist, width: _width}) do
+    case DrawCanvas.values_from_charlist(canvas) do
       error = {:error, reason} ->
         Logger.error([
           "Unexpected error when loading canvas.",
@@ -42,6 +39,9 @@ defmodule Canvex.Canvas.Get do
         ])
 
         error
+
+      values ->
+        {:ok, %{canvas | values: values, charlist: charlist |> List.to_charlist()}}
     end
   end
 end

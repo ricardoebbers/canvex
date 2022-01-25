@@ -43,41 +43,27 @@ defmodule Canvex.Draw.Canvas do
     %{canvas | charlist: charlist}
   end
 
-  def values_from_charlist(%{width: width, charlist: charlist})
+  def values_from_charlist(canvas = %{width: width, charlist: charlist})
       when width > 0 and is_list(charlist) do
-    charlist
-    |> Enum.map(&Stroke.ascii_printable/1)
-    |> Stream.with_index()
-    |> Stream.map(fn {char, index} -> {{rem(index, width), div(index, width)}, char} end)
-    |> Map.new()
+    values =
+      charlist
+      |> Enum.map(&Stroke.ascii_printable/1)
+      |> Stream.with_index()
+      |> Stream.map(fn {char, index} -> {{rem(index, width), div(index, width)}, char} end)
+      |> Map.new()
+
+    Map.put(canvas, :values, values)
   end
 
-  def values_from_charlist(params) do
-    message = "Unexpected params, unable to create a canvas."
-    Logger.error([message, " params: #{inspect(params)}"])
-    {:error, message}
-  end
-
-  def charlist_and_values_from_params(%{width: width, height: height, fill: fill})
+  def new_charlist(canvas = %{width: width, height: height, fill: fill})
       when width > 0 and height > 0 and not is_nil(fill) do
-    fill
-    |> Stroke.ascii_printable()
-    |> case do
-      error = {:error, _reason} ->
-        error
-
-      fill ->
-        %{
-          values: Map.new(coords(width, height), &{&1, fill}),
-          charlist: List.duplicate(fill, height * width) |> List.to_charlist()
-        }
-    end
+    canvas
+    |> Map.put(:charlist, List.duplicate(fill, height * width) |> List.to_charlist())
   end
 
-  def charlist_and_values_from_params(params) do
-    message = "Unexpected params, unable to create a canvas."
-    Logger.error([message, " params: #{inspect(params)}"])
-    {:error, message}
+  def new_values(canvas = %{width: width, height: height, fill: fill}) do
+    canvas
+    |> Map.put(:values, Map.new(coords(width, height), &{&1, fill}))
   end
 
   def get_value_at(canvas, {x, y}) do

@@ -53,12 +53,10 @@ defmodule Canvex.Schema.Canvas do
     canvas
     |> cast(attrs, @fields)
     |> validate_required(@required_new)
-    |> generate_charlist_and_values()
     |> validate_number(:height, greater_than: 0, less_than_or_equal_to: 500)
     |> validate_number(:width, greater_than: 0, less_than_or_equal_to: 500)
+    |> create_values()
   end
-
-  defp update_charlist(changeset = %{valid?: false}), do: changeset
 
   defp update_charlist(changeset = %{data: data, changes: changes}) do
     canvas =
@@ -68,17 +66,14 @@ defmodule Canvex.Schema.Canvas do
     put_change(changeset, :charlist, canvas.charlist)
   end
 
-  defp generate_charlist_and_values(canvas = %{valid?: false}), do: canvas
+  defp create_values(canvas = %{valid?: false}), do: canvas
 
-  defp generate_charlist_and_values(canvas = %{changes: changes}) do
-    case DrawCanvas.charlist_and_values_from_params(changes) do
-      {:error, _reason} ->
-        canvas
-
-      %{charlist: charlist, values: values} ->
-        canvas
-        |> put_change(:charlist, charlist)
-        |> put_change(:values, values)
+  defp create_values(canvas = %{changes: changes}) do
+    with %{charlist: charlist} <- DrawCanvas.new_charlist(changes),
+         %{values: values} <- DrawCanvas.new_values(changes) do
+      canvas
+      |> put_change(:charlist, charlist)
+      |> put_change(:values, values)
     end
   end
 

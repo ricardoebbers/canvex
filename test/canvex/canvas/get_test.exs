@@ -41,10 +41,5 @@ defmodule Canvex.Canvas.GetTest do
     test "should return error bad request when id is not a uuid" do
       assert {:error, :bad_request} = Get.by_id("abc")
     end
-
-    test "should return error when canvas is malformed on the database" do
-      %{id: id} = insert(:canvas, charlist: nil)
-      assert {:error, _reason} = Get.by_id(id)
-    end
   end
 end

@@ -27,8 +27,6 @@ defmodule Canvex.Draw.Canvas do
     Map.put(canvas, :values, values)
   end
 
-
-
   def get_value_at(canvas, {x, y}) do
     Map.get(canvas.values, {x, y})
   end

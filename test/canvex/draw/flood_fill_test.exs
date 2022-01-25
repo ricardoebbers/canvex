@@ -30,7 +30,7 @@ defmodule Canvex.Draw.FloodFillTest do
                '      +++ ',
                '      +++ ',
                '      +++ '
-             ] = Matrix.from_canvas(canvas)
+             ] = matrix(canvas)
 
       assert [
                'xxxxxxxxxx',
@@ -43,7 +43,7 @@ defmodule Canvex.Draw.FloodFillTest do
                'xxxxxx+++x',
                'xxxxxx+++x',
                'xxxxxx+++x'
-             ] = FloodFill.call(canvas, %{x: 0, y: 0, fill: 'x'}) |> Matrix.from_canvas()
+             ] = FloodFill.call(canvas, %{x: 0, y: 0, fill: 'x'}) |> matrix()
     end
 
     test "should fill an outline", %{canvas: canvas} do
@@ -58,7 +58,7 @@ defmodule Canvex.Draw.FloodFillTest do
                '      +++ ',
                '      +++ ',
                '      +++ '
-             ] = FloodFill.call(canvas, %{x: 1, y: 1, fill: 'x'}) |> Matrix.from_canvas()
+             ] = FloodFill.call(canvas, %{x: 1, y: 1, fill: 'x'}) |> matrix()
     end
 
     test "should not jump other chars", %{canvas: canvas} do
@@ -73,17 +73,17 @@ defmodule Canvex.Draw.FloodFillTest do
                '      +++ ',
                '      +++ ',
                '      +++ '
-             ] = FloodFill.call(canvas, %{x: 2, y: 2, fill: 'x'}) |> Matrix.from_canvas()
+             ] = FloodFill.call(canvas, %{x: 2, y: 2, fill: 'x'}) |> matrix()
     end
 
     test "should do nothing when target char is the same of fill char", %{canvas: canvas} do
-      assert Matrix.from_canvas(canvas) ==
-               FloodFill.call(canvas, %{x: 0, y: 0, fill: ' '}) |> Matrix.from_canvas()
+      assert matrix(canvas) ==
+               FloodFill.call(canvas, %{x: 0, y: 0, fill: ' '}) |> matrix()
     end
 
     test "should do nothing when trying to fill out of bounds", %{canvas: canvas} do
-      assert Matrix.from_canvas(canvas) ==
-               FloodFill.call(canvas, %{x: -2, y: 2, fill: 'x'}) |> Matrix.from_canvas()
+      assert matrix(canvas) ==
+               FloodFill.call(canvas, %{x: -2, y: 2, fill: 'x'}) |> matrix()
     end
   end
 end

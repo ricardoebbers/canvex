@@ -22,7 +22,7 @@ defmodule Canvex.Draw.RectangleTest do
              ] =
                canvas
                |> Rectangle.call(args)
-               |> Matrix.from_canvas()
+               |> matrix()
     end
 
     test "should draw a rectangle with fill", %{canvas: canvas} do
@@ -37,7 +37,7 @@ defmodule Canvex.Draw.RectangleTest do
              ] =
                canvas
                |> Rectangle.call(args)
-               |> Matrix.from_canvas()
+               |> matrix()
     end
 
     test "should draw a rectangle with fill and outline", %{canvas: canvas} do
@@ -52,7 +52,7 @@ defmodule Canvex.Draw.RectangleTest do
              ] =
                canvas
                |> Rectangle.call(args)
-               |> Matrix.from_canvas()
+               |> matrix()
     end
 
     test "should draw multiple rectangles", %{canvas: canvas} do
@@ -69,7 +69,7 @@ defmodule Canvex.Draw.RectangleTest do
                canvas
                |> Rectangle.call(args_r1)
                |> Rectangle.call(args_r2)
-               |> Matrix.from_canvas()
+               |> matrix()
     end
 
     test "should draw overlapping rectangles", %{canvas: canvas} do
@@ -86,7 +86,7 @@ defmodule Canvex.Draw.RectangleTest do
                canvas
                |> Rectangle.call(args_r1)
                |> Rectangle.call(args_r2)
-               |> Matrix.from_canvas()
+               |> matrix()
     end
 
     test "should do nothing if neither fill nor outline are passed", %{canvas: canvas} do

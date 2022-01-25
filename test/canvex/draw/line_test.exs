@@ -19,7 +19,7 @@ defmodule Canvex.Draw.LineTest do
                '  |  ',
                '  |  ',
                '     '
-             ] = Line.vertical(canvas, args) |> Matrix.from_canvas()
+             ] = Line.vertical(canvas, args) |> matrix()
     end
 
     test "should draw up given negative size", %{canvas: canvas} do
@@ -31,7 +31,7 @@ defmodule Canvex.Draw.LineTest do
                '  |  ',
                '     ',
                '     '
-             ] = Line.vertical(canvas, args) |> Matrix.from_canvas()
+             ] = Line.vertical(canvas, args) |> matrix()
     end
 
     test "should not draw past canvas boundaries", %{canvas: canvas} do
@@ -43,7 +43,7 @@ defmodule Canvex.Draw.LineTest do
                '  |  ',
                '  |  ',
                '  |  '
-             ] = Line.vertical(canvas, args) |> Matrix.from_canvas()
+             ] = Line.vertical(canvas, args) |> matrix()
     end
 
     test "should return error when trying to draw non-ascii printable chars", %{canvas: canvas} do
@@ -63,7 +63,7 @@ defmodule Canvex.Draw.LineTest do
                '  -- ',
                '     ',
                '     '
-             ] = Line.horizontal(canvas, args) |> Matrix.from_canvas()
+             ] = Line.horizontal(canvas, args) |> matrix()
     end
 
     test "should draw to the left given negative size", %{canvas: canvas} do
@@ -75,7 +75,7 @@ defmodule Canvex.Draw.LineTest do
                ' --  ',
                '     ',
                '     '
-             ] = Line.horizontal(canvas, args) |> Matrix.from_canvas()
+             ] = Line.horizontal(canvas, args) |> matrix()
     end
 
     test "should not draw past canvas boundaries", %{canvas: canvas} do
@@ -87,7 +87,7 @@ defmodule Canvex.Draw.LineTest do
                '  ---',
                '     ',
                '     '
-             ] = Line.horizontal(canvas, args) |> Matrix.from_canvas()
+             ] = Line.horizontal(canvas, args) |> matrix()
     end
 
     test "should return error when trying to draw non-ascii printable chars", %{canvas: canvas} do

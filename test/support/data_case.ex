@@ -55,4 +55,10 @@ defmodule Canvex.DataCase do
       end)
     end)
   end
+
+  def matrix(canvas) do
+    %{charlist: charlist} = Canvex.Draw.Canvas.update_charlist(canvas)
+
+    Enum.chunk_every(charlist, canvas.width)
+  end
 end

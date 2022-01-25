@@ -38,11 +38,13 @@ defmodule CanvexWeb.CanvasControllerTest do
     end
 
     test "should render errors when width and height are too big", %{conn: conn} do
-      params = string_params_for(:canvas, height: 500, width: 500)
+      params = string_params_for(:canvas, height: 501, width: 501)
       conn = post(conn, Routes.canvas_path(conn, :create), params)
 
-      assert %{"height" => ["must be less than 500"], "width" => ["must be less than 500"]} =
-               json_response(conn, 422)["errors"]
+      assert %{
+               "height" => ["must be less than or equal to 500"],
+               "width" => ["must be less than or equal to 500"]
+             } = json_response(conn, 422)["errors"]
     end
 
     test "should ignore id passed on params", %{conn: conn} do

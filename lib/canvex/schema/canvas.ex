@@ -53,8 +53,8 @@ defmodule Canvex.Schema.Canvas do
     |> cast(attrs, @fields)
     |> validate_required(@required_new)
     |> validate_draw()
-    |> validate_number(:height, greater_than: 0, less_than: 500)
-    |> validate_number(:width, greater_than: 0, less_than: 500)
+    |> validate_number(:height, greater_than: 0, less_than_or_equal_to: 500)
+    |> validate_number(:width, greater_than: 0, less_than_or_equal_to: 500)
   end
 
   def load_values(canvas = %{charlist: _charlist, width: _width}) do

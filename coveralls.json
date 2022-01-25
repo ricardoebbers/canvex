@@ -1,5 +1,9 @@
 {
     "skip_files": [
-        "test"
+        "test",
+        "lib/canvex_web.ex",
+        "lib/canvex/application.ex",
+        "lib/canvex_web/telemetry.ex",
+        "lib/canvex_web/views/error_helpers.ex"
     ]
 }

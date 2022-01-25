@@ -23,12 +23,18 @@ defmodule Canvex.Factory do
     |> Map.put(:fill, "o")
   end
 
+  def rectangle_with_fill_and_outline_factory do
+    draw_rectangle_command()
+    |> Map.put(:fill, "o")
+    |> Map.put(:outline, "X")
+  end
+
   def flood_fill_factory do
     %{
       command: "flood_fill",
       x: 0,
       y: 0,
-      fill: 'x'
+      fill: "x"
     }
   end
 

@@ -51,7 +51,7 @@ defmodule CanvexWeb.FallbackController do
     )
 
     conn
-    |> put_status(:bad_request)
+    |> put_status(:unprocessable_entity)
     |> put_view(CanvexWeb.ErrorView)
     |> render("error.json", reason: "Char provided is not on the ASCII table.")
   end

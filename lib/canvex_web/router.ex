@@ -14,12 +14,6 @@ defmodule CanvexWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", CanvexWeb do
-    pipe_through :browser
-
-    get "/", PageController, :index
-  end
-
   scope "/api", CanvexWeb do
     pipe_through :api
 

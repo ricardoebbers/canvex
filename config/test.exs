@@ -25,8 +25,3 @@ config :logger, level: :info
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
-
-config :canvex, Canvex.Draw.Canvas,
-  default_width: 5,
-  default_height: 5,
-  default_fill: ' '

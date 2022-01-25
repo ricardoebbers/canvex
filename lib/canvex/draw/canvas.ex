@@ -12,11 +12,6 @@ defmodule Canvex.Draw.Canvas do
 
   require Logger
 
-  def new do
-    params = default_params()
-    build(params[:default_width], params[:default_height], params[:default_fill])
-  end
-
   def new(%{width: width, charlist: charlist}) when width > 0 and is_list(charlist) do
     charlist
     |> Enum.map(&Stroke.ascii_printable/1)
@@ -97,6 +92,4 @@ defmodule Canvex.Draw.Canvas do
   end
 
   defp coords(width, height), do: for(x <- 0..(width - 1), y <- 0..(height - 1), do: {x, y})
-
-  defp default_params, do: Application.get_env(:canvex, __MODULE__)
 end

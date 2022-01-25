@@ -25,7 +25,8 @@ defmodule Canvex.Canvas.Get do
       nil ->
         {:error, :not_found}
 
-      canvas = %Canvas{} -> load_values(canvas)
+      canvas = %Canvas{} ->
+        load_values(canvas)
     end
   end
 

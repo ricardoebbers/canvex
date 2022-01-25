@@ -3,16 +3,6 @@ defmodule Canvex.Draw.CanvasTest do
 
   alias Canvex.Draw.Canvas
 
-  describe "new/0" do
-    test "should create a new canvas with default size and fill" do
-      assert %Canvas{
-               charlist: '                         ',
-               height: 5,
-               width: 5
-             } = Canvas.new()
-    end
-  end
-
   describe "new/1" do
     test "should create a new canvas with given size and fill" do
       args = %{width: 1, height: 2, fill: '#'}

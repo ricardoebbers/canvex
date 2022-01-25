@@ -47,7 +47,6 @@ defmodule Canvex.Draw.Canvas do
       when width > 0 and is_list(charlist) do
     values =
       charlist
-      |> Enum.map(&Stroke.ascii_printable/1)
       |> Stream.with_index()
       |> Stream.map(fn {char, index} -> {{rem(index, width), div(index, width)}, char} end)
       |> Map.new()

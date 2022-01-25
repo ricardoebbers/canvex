@@ -29,9 +29,9 @@ defmodule Canvex.Schema.Canvas do
 
   schema "canvas" do
     field :charlist, {:array, ASCIIPrintable}
-    field :fill, ASCIIPrintable, virtual: true, redact: true
+    field :fill, ASCIIPrintable, virtual: true
     field :height, :integer
-    field :values, :map, virtual: true, redact: true
+    field :values, :map, virtual: true
     field :width, :integer
     field :user_id, Ecto.UUID
 
@@ -55,21 +55,6 @@ defmodule Canvex.Schema.Canvas do
     |> validate_draw()
     |> validate_number(:height, greater_than: 0, less_than_or_equal_to: 500)
     |> validate_number(:width, greater_than: 0, less_than_or_equal_to: 500)
-  end
-
-  def load_values(canvas = %{charlist: _charlist, width: _width}) do
-    case DrawCanvas.new(canvas) do
-      %DrawCanvas{values: values, charlist: charlist} ->
-        {:ok, %{canvas | values: values, charlist: charlist}}
-
-      error = {:error, reason} ->
-        Logger.error([
-          "Unexpected error when loading canvas.",
-          "reason: #{inspect(reason)}, canvas: #{inspect(canvas)}"
-        ])
-
-        error
-    end
   end
 
   defp validate_draw(canvas = %{valid?: false}), do: canvas

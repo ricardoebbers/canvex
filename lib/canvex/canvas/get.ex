@@ -3,6 +3,7 @@ defmodule Canvex.Canvas.Get do
 
   alias Canvex.Repo
   alias Canvex.Schema.Canvas
+  alias Canvex.Draw.Canvas, as: DrawCanvas
 
   require Logger
 
@@ -24,8 +25,22 @@ defmodule Canvex.Canvas.Get do
       nil ->
         {:error, :not_found}
 
-      canvas = %Canvas{} ->
-        Canvas.load_values(canvas)
+      canvas = %Canvas{} -> load_values(canvas)
+    end
+  end
+
+  defp load_values(canvas = %{charlist: _charlist, width: _width}) do
+    case DrawCanvas.new(canvas) do
+      %DrawCanvas{values: values, charlist: charlist} ->
+        {:ok, %{canvas | values: values, charlist: charlist}}
+
+      error = {:error, reason} ->
+        Logger.error([
+          "Unexpected error when loading canvas.",
+          "reason: #{inspect(reason)}, canvas: #{inspect(canvas)}"
+        ])
+
+        error
     end
   end
 end

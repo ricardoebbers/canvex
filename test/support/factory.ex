@@ -1,4 +1,5 @@
 defmodule Canvex.Factory do
+  @moduledoc false
   use ExMachina.Ecto, repo: Canvex.Repo
 
   alias Canvex.Schema.Canvas
@@ -20,6 +21,15 @@ defmodule Canvex.Factory do
   def rectangle_with_fill_factory do
     draw_rectangle_command()
     |> Map.put(:fill, "o")
+  end
+
+  def flood_fill_factory do
+    %{
+      command: "flood_fill",
+      x: 0,
+      y: 0,
+      fill: 'x'
+    }
   end
 
   defp draw_rectangle_command do

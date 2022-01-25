@@ -24,5 +24,10 @@ defmodule Canvex.DrawTest do
 
       assert {:ok, %{charlist: 'ooo  oXXX oXoX  XXX      '}} = Draw.call(id, r2_params)
     end
+
+    test "should flood_fill", %{id: id} do
+      params = params_for(:flood_fill)
+      assert {:ok, %{charlist: 'xxxxxxxxxxxxxxxxxxxxxxxxx'}} = Draw.call(id, params)
+    end
   end
 end

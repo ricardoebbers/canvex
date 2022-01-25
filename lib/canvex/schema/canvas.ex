@@ -26,6 +26,7 @@ defmodule Canvex.Schema.Canvas do
   @foreign_key_type :binary_id
   @fields ~w(charlist fill height values width user_id)a
   @required_new ~w(fill height user_id width)a
+  @required_update ~w(charlist height width user_id)a
 
   schema "canvas" do
     field :charlist, {:array, ASCIIPrintable}
@@ -42,9 +43,9 @@ defmodule Canvex.Schema.Canvas do
 
   def update_changeset(canvas, attrs) do
     canvas
-    |> cast(attrs, [:charlist, :values])
-    |> validate_required([:charlist, :values])
-    |> validate_draw()
+    |> cast(attrs, [:values])
+    |> validate_required(@required_update)
+    |> generate_charlist_from_values()
   end
 
   @doc false
@@ -52,21 +53,34 @@ defmodule Canvex.Schema.Canvas do
     canvas
     |> cast(attrs, @fields)
     |> validate_required(@required_new)
-    |> validate_draw()
+    |> generate_charlist_and_values()
     |> validate_number(:height, greater_than: 0, less_than_or_equal_to: 500)
     |> validate_number(:width, greater_than: 0, less_than_or_equal_to: 500)
   end
 
-  defp validate_draw(canvas = %{valid?: false}), do: canvas
+  defp generate_charlist_from_values(changeset = %{valid?: false}), do: changeset
 
-  defp validate_draw(canvas = %{data: data, changes: changes}) do
+  defp generate_charlist_from_values(changeset = %{data: data, changes: changes}) do
     data
-    |> get_attrs()
     |> Map.merge(changes)
-    |> DrawCanvas.new()
+    |> DrawCanvas.charlist_from_values()
     |> case do
-      draw_canvas = %DrawCanvas{} -> put_changes(canvas, draw_canvas)
-      _ -> canvas
+      {:error, _reason} -> changeset
+      charlist -> put_change(changeset, :charlist, charlist)
+    end
+  end
+
+  defp generate_charlist_and_values(canvas = %{valid?: false}), do: canvas
+
+  defp generate_charlist_and_values(canvas = %{changes: changes}) do
+    case DrawCanvas.charlist_and_values_from_params(changes) do
+      {:error, _reason} ->
+        canvas
+
+      %{charlist: charlist, values: values} ->
+        canvas
+        |> put_change(:charlist, charlist)
+        |> put_change(:values, values)
     end
   end
 
@@ -74,12 +88,5 @@ defmodule Canvex.Schema.Canvas do
     @fields
     |> Enum.map(fn key -> {key, Map.get(canvas, key)} end)
     |> Map.new()
-  end
-
-  defp put_changes(canvas, draw_canvas) do
-    canvas
-    |> put_change(:values, draw_canvas.values)
-    |> put_change(:charlist, draw_canvas.charlist)
-    |> put_change(:height, draw_canvas.height)
   end
 end

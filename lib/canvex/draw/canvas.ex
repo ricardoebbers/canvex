@@ -34,6 +34,12 @@ defmodule Canvex.Draw.Canvas do
     {:error, message}
   end
 
+  def charlist_from_values(%{width: width, height: height, values: values}) do
+    coords(width, height)
+    |> Enum.map(&Map.get(values, &1))
+    |> List.to_charlist()
+  end
+
   def values_from_charlist(%{width: width, charlist: charlist})
       when width > 0 and is_list(charlist) do
     charlist
@@ -44,6 +50,28 @@ defmodule Canvex.Draw.Canvas do
   end
 
   def values_from_charlist(params) do
+    message = "Unexpected params, unable to create a canvas."
+    Logger.error([message, " params: #{inspect(params)}"])
+    {:error, message}
+  end
+
+  def charlist_and_values_from_params(%{width: width, height: height, fill: fill})
+      when width > 0 and height > 0 and not is_nil(fill) do
+    fill
+    |> Stroke.ascii_printable()
+    |> case do
+      error = {:error, _reason} ->
+        error
+
+      fill ->
+        %{
+          values: Map.new(coords(width, height), &{&1, fill}),
+          charlist: List.duplicate(fill, height * width) |> List.to_charlist()
+        }
+    end
+  end
+
+  def charlist_and_values_from_params(params) do
     message = "Unexpected params, unable to create a canvas."
     Logger.error([message, " params: #{inspect(params)}"])
     {:error, message}
@@ -106,5 +134,5 @@ defmodule Canvex.Draw.Canvas do
     }
   end
 
-  defp coords(width, height), do: for(x <- 0..(width - 1), y <- 0..(height - 1), do: {x, y})
+  defp coords(width, height), do: for(y <- 0..(height - 1), x <- 0..(width - 1), do: {x, y})
 end

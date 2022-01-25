@@ -27,16 +27,7 @@ defmodule Canvex.Draw.Canvas do
     Map.put(canvas, :values, values)
   end
 
-  def new_charlist(canvas = %{width: width, height: height, fill: fill})
-      when width > 0 and height > 0 and not is_nil(fill) do
-    canvas
-    |> Map.put(:charlist, List.duplicate(fill, height * width) |> List.to_charlist())
-  end
 
-  def new_values(canvas = %{width: width, height: height, fill: fill}) do
-    canvas
-    |> Map.put(:values, Map.new(coords(width, height), &{&1, fill}))
-  end
 
   def get_value_at(canvas, {x, y}) do
     Map.get(canvas.values, {x, y})
@@ -51,15 +42,11 @@ defmodule Canvex.Draw.Canvas do
         error
 
       value ->
-        update_value(canvas, coords, value)
+        %{canvas | values: Map.put(canvas.values, coords, value)}
     end
   end
 
   def put_value_at(canvas, _coords, _value), do: canvas
-
-  defp update_value(canvas, coords, value) do
-    %{canvas | values: Map.put(canvas.values, coords, value)}
-  end
 
   defp coords(width, height), do: for(y <- 0..(height - 1), x <- 0..(width - 1), do: {x, y})
 end

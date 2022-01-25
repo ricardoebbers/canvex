@@ -69,13 +69,20 @@ defmodule Canvex.Schema.Canvas do
   defp create_values(canvas = %{valid?: false}), do: canvas
 
   defp create_values(canvas = %{changes: changes}) do
-    with %{charlist: charlist} <- DrawCanvas.new_charlist(changes),
-         %{values: values} <- DrawCanvas.new_values(changes) do
-      canvas
-      |> put_change(:charlist, charlist)
-      |> put_change(:values, values)
-    end
+    canvas
+    |> new_charlist(changes)
+    |> new_values(changes)
   end
+
+  defp new_charlist(canvas, %{width: width, height: height, fill: fill}) do
+    put_change(canvas, :charlist, List.duplicate(fill, height * width) |> List.to_charlist())
+  end
+
+  defp new_values(canvas, %{width: width, height: height, fill: fill}) do
+    put_change(canvas, :values, Map.new(coords(width, height), &{&1, fill}))
+  end
+
+  defp coords(width, height), do: for(y <- 0..(height - 1), x <- 0..(width - 1), do: {x, y})
 
   defp get_attrs(canvas) do
     @fields

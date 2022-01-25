@@ -82,4 +82,7 @@ defmodule CanvexWeb.CanvasControllerTest do
       assert %{"error" => "Bad request"} = json_response(conn, 400)
     end
   end
+
+  describe "draw/2" do
+  end
 end

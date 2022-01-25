@@ -11,4 +11,24 @@ defmodule Canvex.Factory do
       user_id: Ecto.UUID.generate()
     }
   end
+
+  def rectangle_with_outline_factory do
+    draw_rectangle_command()
+    |> Map.put(:outline, "X")
+  end
+
+  def rectangle_with_fill_factory do
+    draw_rectangle_command()
+    |> Map.put(:fill, "o")
+  end
+
+  defp draw_rectangle_command do
+    %{
+      command: "rectangle",
+      x: 0,
+      y: 0,
+      width: 3,
+      height: 3
+    }
+  end
 end

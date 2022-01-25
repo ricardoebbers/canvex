@@ -23,23 +23,6 @@ defmodule Canvex.Canvas.CreateTest do
               }} = canvas
     end
 
-    test "should store and return a canvas given a charlist and a width" do
-      canvas =
-        %{
-          "width" => 5,
-          "charlist" => 'ooooooxxxooxoxooxoxooxxxoooooo',
-          "user_id" => Ecto.UUID.generate()
-        }
-        |> Create.call()
-
-      assert {:ok,
-              %Canvas{
-                charlist: 'ooooooxxxooxoxooxoxooxxxoooooo',
-                height: 6,
-                width: 5
-              }} = canvas
-    end
-
     test "should return error when there are missing parameters" do
       canvas = Create.call(%{})
 
@@ -64,18 +47,6 @@ defmodule Canvex.Canvas.CreateTest do
       assert %{fill: ["is invalid"]} = errors_on(canvas)
     end
 
-    test "should return error when there are invalid chars on charlist" do
-      canvas =
-        %{
-          "width" => 1,
-          "charlist" => 'ñão',
-          "user_id" => Ecto.UUID.generate()
-        }
-        |> Create.call()
-
-      assert %{charlist: ["is invalid"]} = errors_on(canvas)
-    end
-
     test "should return errors when height or width are not positive" do
       canvas =
         %{
@@ -88,18 +59,6 @@ defmodule Canvex.Canvas.CreateTest do
 
       assert %{height: ["must be greater than 0"], width: ["must be greater than 0"]} =
                errors_on(canvas)
-    end
-
-    test "should return error if generated canvas have zero height" do
-      canvas =
-        %{
-          "width" => 5,
-          "charlist" => 'oooo',
-          "user_id" => Ecto.UUID.generate()
-        }
-        |> Create.call()
-
-      assert %{height: ["must be greater than 0"]} = errors_on(canvas)
     end
   end
 end

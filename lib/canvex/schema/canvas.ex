@@ -26,7 +26,7 @@ defmodule Canvex.Schema.Canvas do
   @foreign_key_type :binary_id
   @fields ~w(charlist fill height values width user_id)a
   @required_new ~w(fill height user_id width)a
-  @required_existing ~w(charlist user_id width)a
+
   schema "canvas" do
     field :charlist, {:array, ASCIIPrintable}
     field :fill, ASCIIPrintable, virtual: true, redact: true
@@ -38,16 +38,20 @@ defmodule Canvex.Schema.Canvas do
     timestamps()
   end
 
-  def changeset(canvas, other = %Canvas{}) do
-    attrs = get_attrs(other)
+  def update_changeset(canvas, other = %Canvas{}), do: update_changeset(canvas, get_attrs(other))
 
-    changeset(canvas, attrs)
+  def update_changeset(canvas, attrs) do
+    canvas
+    |> cast(attrs, [:charlist, :values])
+    |> validate_required([:charlist, :values])
+    |> validate_draw()
   end
 
   @doc false
   def changeset(canvas, attrs) do
     canvas
-    |> validate_input(attrs)
+    |> cast(attrs, @fields)
+    |> validate_required(@required_new)
     |> validate_draw()
     |> validate_number(:height, greater_than: 0, less_than: 500)
     |> validate_number(:width, greater_than: 0, less_than: 500)
@@ -66,20 +70,6 @@ defmodule Canvex.Schema.Canvas do
 
         error
     end
-  end
-
-  defp validate_input(canvas, attrs = %{"width" => _width, "charlist" => _charlist}) do
-    do_validate_input(canvas, attrs, @required_existing)
-  end
-
-  defp validate_input(canvas, attrs) do
-    do_validate_input(canvas, attrs, @required_new)
-  end
-
-  defp do_validate_input(canvas, attrs, required) do
-    canvas
-    |> cast(attrs, @fields)
-    |> validate_required(required)
   end
 
   defp validate_draw(canvas = %{valid?: false}), do: canvas

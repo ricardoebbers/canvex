@@ -21,7 +21,7 @@ defmodule Canvex.Canvas.Update do
 
   defp do_update(canvas, attrs) do
     canvas
-    |> Canvas.changeset(attrs)
+    |> Canvas.update_changeset(attrs)
     |> Repo.update()
   end
 end

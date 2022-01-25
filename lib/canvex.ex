@@ -4,43 +4,46 @@ defmodule Canvex do
 
   ## Canvas
 
-  Canvas are identifiable with a global unique identifier in the form of an UUID.
-  They are represented as a matrix of `chars`, all being ASCII printable.
+  Canvases are identifiable with a global unique identifier in the form of an UUID.
 
-  ## Operations
+  Canvases are represented as a matrix of `chars`, all being ASCII printable,
+  with coordinates that start from the top left, like this:
+  ```
+  # a canvas with width = 10, height = 5, fill = 'o'
+            0 1 2 3 4 5 6 7 8 9 (x axis)
+            _ _ _ _ _ _ _ _ _ _
+        0 | o o o o o o o o o o
+        1 | o o o o o o o o o o
+        2 | o o o o o o o o o o
+        3 | o o o o o o o o o o
+        4 | o o o o o o o o o o
+  (y axis)
+  ```
 
-  It's possible to `draw rectangles` and `flood fill` a canvas with ASCII printable
-  `chars`.
+  ## Drawing
 
-  To create a new canvas call `Canvex.new_canvas/1`.
+  It's possible to do drawings on a canvas with ASCII printable `chars`.
+
+  To create refer to `Canvex.new_canvas/1`.
 
   It's possible to fetch a previously created canvas from the database
   by calling `Canvex.get_canvas_by_id/1`.
 
-  After that, you can `draw rectangles` on the canvas by calling `Canvex.draw_rectangle/2`,
-  passing the canvas you created and the corresponding `rectangle` parameters.
-
-  Also, you can `flood fill` the canvas with a given `char` by calling `Canvex.flood_fill/2`.
-
+  Refer to `Canvex.draw_on_canvas/2` to know which drawing operations are possible.
   """
-  alias Canvex.Canvas.{Create, Get, Update}
-  alias Canvex.Draw.{FloodFill, Rectangle}
+  alias Canvex.Canvas.{Create, Get}
+  alias Canvex.Draw
   alias Canvex.Schema.Canvas, as: CanvasSchema
 
   @doc """
-  Creates a `canvas` given `width`, `height`, `fill`, and an UUID as `user_id`.
-
-  Alternatively it's possible to create a canvas by passing a `charlist`, a `width`, and an UUID as `user_id`
+  Creates a `canvas` given a map containing `width`, `height`, `fill`, and an UUID as `user_id`.
 
   Returns {:ok, canvas} if the parameters are valid.
   Otherwise, returns {:error, changeset}
 
   ## Examples
-      iex> attrs = %{"width" => 3, "height" => 5, "fill" => " ", "user_id" => Ecto.UUID.generate()}
+      iex> attrs = %{width: 3, height: 5, fill: " ", user_id: Ecto.UUID.generate()}
       iex> {:ok, %{charlist: '               ', height: 5, width: 3}} = Canvex.new_canvas(attrs)
-
-      iex> attrs = %{"width" => 3, "charlist" => 'xxxoooxxx', "user_id" => Ecto.UUID.generate()}
-      iex> {:ok, %{charlist: 'xxxoooxxx', height: 3, width: 3}} = Canvex.new_canvas(attrs)
 
       iex> {:error, _changeset} = Canvex.new_canvas(%{})
   """
@@ -54,7 +57,7 @@ defmodule Canvex do
   Otherwise, returns {:error, :not_found} for missing canvas or {:error, :bad_request} for invalid UUID.
 
   ## Examples
-        iex> attrs = %{"width" => 3, "height" => 5, "fill" => " ", "user_id" => Ecto.UUID.generate()}
+        iex> attrs = %{width: 3, height: 5, fill: " ", user_id: Ecto.UUID.generate()}
         iex> {:ok, %{id: id}} = Canvex.new_canvas(attrs)
         iex> {:ok, _canvas} = Canvex.get_canvas_by_id(id)
 
@@ -66,68 +69,78 @@ defmodule Canvex do
   defdelegate get_canvas_by_id(id), to: Get, as: :by_id
 
   @doc """
-  Updates a `canvas` on the database.
+  Do a drawing operation on `canvas`, given the `canvas_id` and the operation `params`.
 
-  Returns {:ok, canvas} if the update happens without problems.
-  Otherwise, returns {:error, changeset}
+  If the operation is successful, will persist the changes to the canvas.
+  Otherwise, returns `{:error, reason}`
 
-  ## Examples
-        iex> attrs = %{"width" => 3, "height" => 5, "fill" => " ", "user_id" => Ecto.UUID.generate()}
-        iex> {:ok, canvas} = Canvex.new_canvas(attrs)
-        iex> rectangle_attrs = %{x: 0, y: 0, width: 3, height: 3, fill: "x"}
-        iex> modified_canvas = Canvex.draw_rectangle(canvas, rectangle_attrs)
-        iex> Canvex.update_canvas(modified_canvas)
-  """
-  @spec update_canvas(any()) :: {:ok, CanvasSchema.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate update_canvas(canvas), to: Update, as: :call
+  The operations that are implemented are `draw rectangle` and `flood fill`.
 
-  @doc """
-  Draws a `rectangle` on the given `canvas`.
+  ## Draw Rectangle
 
-  Rectangles can have a `fill`, an `outline` or both.
+  Rectangles must have an `x` and `y` coordinates of it's starting point,
+  a `width`, a `height`, and can have a `fill`, an `outline`, or both.
 
-  Does not update the canvas on the database! You need to call `Canvex.update_canvas/1` after!
+  ```
+  # a canvas with width = 10, height = 5, fill = 'o'
+  # after a draw operation with command = rectangle,
+  # x = 2, y = 1, width = 5, height = 3, fill = '-', outline = 'X'
+            0 1 2 3 4 5 6 7 8 9 (x axis)
+            _ _ _ _ _ _ _ _ _ _
+        0 | o o o o o o o o o o
+        1 | o o X X X X X o o o
+        2 | o o X - - - X o o o
+        3 | o o X X X X X o o o
+        4 | o o o o o o o o o o
+  (y axis)
+  ```
 
-  Returns modified `canvas` if the params are valid.
+  Returns updated `canvas` if the params are valid.
   Otherwise, returns {:error, :bad_request}.
 
   ## Examples
-        iex> canvas_attrs = %{"width" => 3, "height" => 5, "fill" => " ", "user_id" => Ecto.UUID.generate()}
-        iex> {:ok, canvas} = Canvex.new_canvas(canvas_attrs)
-        iex> rectangle_attrs = %{x: 0, y: 0, width: 3, height: 3, fill: "x"}
-        iex> _canvas = Canvex.draw_rectangle(canvas, rectangle_attrs)
+      iex> canvas_attrs = %{width: 3, height: 5, fill: " ", user_id: Ecto.UUID.generate()}
+      iex> {:ok, %{id: id}} = Canvex.new_canvas(canvas_attrs)
+      iex> rectangle_attrs = %{command: "rectangle", x: 0, y: 0, width: 3, height: 3, fill: "x"}
+      iex> _canvas = Canvex.draw_on_canvas(id, rectangle_attrs)
 
-        iex> canvas_attrs = %{"width" => 3, "height" => 5, "fill" => " ", "user_id" => Ecto.UUID.generate()}
-        iex> {:ok, canvas} = Canvex.new_canvas(canvas_attrs)
-        iex> rectangle_attrs = %{x: 0, y: 0, width: 3, height: 3, outline: "o"}
-        iex> _canvas = Canvex.draw_rectangle(canvas, rectangle_attrs)
+      iex> canvas_attrs = %{width: 3, height: 5, fill: " ", user_id: Ecto.UUID.generate()}
+      iex> {:ok, %{id: id}} = Canvex.new_canvas(canvas_attrs)
+      iex> rectangle_attrs = %{command: "rectangle", x: 0, y: 0, width: 3, height: 3, outline: "o"}
+      iex> _canvas = Canvex.draw_on_canvas(id, rectangle_attrs)
 
-        iex> canvas_attrs = %{"width" => 3, "height" => 5, "fill" => " ", "user_id" => Ecto.UUID.generate()}
-        iex> {:ok, canvas} = Canvex.new_canvas(canvas_attrs)
-        iex> rectangle_attrs = %{x: 0, y: 0, width: 3, height: 3}
-        iex> {:error, :bad_request} = Canvex.draw_rectangle(canvas, rectangle_attrs)
-  """
-  @spec draw_rectangle(any(), map()) :: any() | {:error, :bad_request}
-  defdelegate draw_rectangle(canvas, attrs), to: Rectangle, as: :call
+      iex> canvas_attrs = %{width: 3, height: 5, fill: " ", user_id: Ecto.UUID.generate()}
+      iex> {:ok, %{id: id}} = Canvex.new_canvas(canvas_attrs)
+      iex> rectangle_attrs = %{command: "rectangle", x: 0, y: 0, width: 3, height: 3}
+      iex> {:error, :bad_request} = Canvex.draw_on_canvas(id, rectangle_attrs)
 
-  @doc """
+  ## Flood Fill
+
   Does a `flood fill` operation on the `canvas`.
 
-  A flood fill operation draws the fill character to the start coordinate, and continues
+  A flood fill operation draws the `fill` character to the start `x` and `y` coordinates, and continues
   to attempt drawing the character around (up, down, left, right) in each direction from the
-  position it was drawn at, as long as a different character, or a border of the canvas,
-  is not reached.
+  position it was drawn at, as long as a different character, or a border of the canvas, is not reached.
 
-  Does not update the canvas on the database! You need to call `Canvex.update_canvas/1` after!
-
-  Returns modified `canvas`.
-
+  # a canvas with width = 10, height = 5, fill = 'o'
+  # after a draw operation with command = "rectangle",
+  # x = 2, y = 1, width = 5, height = 3, fill = '-', outline = 'X'
+  # and after a draw operation with command = "flood_fill",
+  # x = 4, y = 3, fill = 'W'
+            0 1 2 3 4 5 6 7 8 9 (x axis)
+            _ _ _ _ _ _ _ _ _ _
+        0 | o o o o o o o o o o
+        1 | o o W W W W W o o o
+        2 | o o W - - - W o o o
+        3 | o o W W W W W o o o
+        4 | o o o o o o o o o o
+  (y axis)
+  ```
   ## Examples
-        iex> canvas_attrs = %{"width" => 3, "height" => 5, "fill" => " ", "user_id" => Ecto.UUID.generate()}
-        iex> {:ok, canvas} = Canvex.new_canvas(canvas_attrs)
-        iex> flood_fill_attrs = %{x: 0, y: 0, fill: "x"}
-        iex> _canvas = Canvex.flood_fill(canvas, flood_fill_attrs)
+      iex> canvas_attrs = %{width: 3, height: 5, fill: " ", user_id: Ecto.UUID.generate()}
+      iex> {:ok, %{id: id}} = Canvex.new_canvas(canvas_attrs)
+      iex> flood_fill_attrs = %{command: "flood_fill", x: 0, y: 0, fill: "x"}
+      iex> _canvas = Canvex.draw_on_canvas(id, flood_fill_attrs)
   """
-  @spec flood_fill(any(), map()) :: any()
-  defdelegate flood_fill(canvas, attrs), to: FloodFill, as: :call
+  defdelegate draw_on_canvas(canvas_id, params), to: Draw, as: :call
 end

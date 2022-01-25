@@ -22,25 +22,10 @@ defmodule CanvexWeb.CanvasController do
 
   def draw(conn, params = %{"id" => id}) do
     with %{valid?: true, changes: changes} <- Draw.validate(params),
-         {:ok, canvas} <- Canvex.get_canvas_by_id(id),
-         {:ok, updated_canvas} <- do_draw(canvas, changes) do
+         {:ok, updated_canvas} <- Canvex.draw_on_canvas(id, changes) do
       conn
       |> put_status(:ok)
       |> render("show.json", canvas: updated_canvas)
-    end
-  end
-
-  defp do_draw(canvas, changes = %{command: "rectangle"}) do
-    case Canvex.draw_rectangle(canvas, changes) do
-      error = {:error, _reason} -> error
-      canvas -> Canvex.update_canvas(canvas)
-    end
-  end
-
-  defp do_draw(canvas, changes = %{command: "flood_fill"}) do
-    case Canvex.flood_fill(canvas, changes) do
-      error = {:error, _reason} -> error
-      canvas -> Canvex.update_canvas(canvas)
     end
   end
 end

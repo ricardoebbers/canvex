@@ -28,7 +28,7 @@ defmodule CanvexWeb.ConnCase do
       import CanvexWeb.ConnCase
       import ExUnit.CaptureLog
       import Canvex.Factory
-      
+
       alias CanvexWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing

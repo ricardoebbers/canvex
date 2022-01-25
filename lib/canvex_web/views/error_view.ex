@@ -14,6 +14,10 @@ defmodule CanvexWeb.ErrorView do
     Phoenix.Controller.status_message_from_template(template)
   end
 
+  def render("error.json", %{reason: reason}) when is_map(reason) do
+    %{errors: reason}
+  end
+
   def render("error.json", %{reason: reason}) do
     %{error: reason}
   end

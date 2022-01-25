@@ -1,5 +1,5 @@
 defmodule Canvex.Canvas.UpdateTest do
-  use Canvex.DataCase
+  use Canvex.DataCase, async: true
 
   alias Canvex.Canvas.{Create, Update}
   alias Canvex.Draw.Line

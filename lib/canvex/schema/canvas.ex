@@ -10,6 +10,8 @@ defmodule Canvex.Schema.Canvas do
   alias Canvex.Schema.Canvas
   alias Canvex.Type.ASCIIPrintable
 
+  require Logger
+
   @type t :: %__MODULE__{
           id: Ecto.UUID,
           charlist: {:array, ASCIIPrintable},
@@ -47,14 +49,22 @@ defmodule Canvex.Schema.Canvas do
     canvas
     |> validate_input(attrs)
     |> validate_draw()
-    |> validate_number(:height, greater_than: 0)
-    |> validate_number(:width, greater_than: 0)
+    |> validate_number(:height, greater_than: 0, less_than: 500)
+    |> validate_number(:width, greater_than: 0, less_than: 500)
   end
 
   def load_values(canvas = %{charlist: _charlist, width: _width}) do
     case DrawCanvas.new(canvas) do
       %DrawCanvas{values: values, charlist: charlist} ->
-        %{canvas | values: values, charlist: charlist}
+        {:ok, %{canvas | values: values, charlist: charlist}}
+
+      error = {:error, reason} ->
+        Logger.error([
+          "Unexpected error when loading canvas.",
+          "reason: #{inspect(reason)}, canvas: #{inspect(canvas)}"
+        ])
+
+        error
     end
   end
 

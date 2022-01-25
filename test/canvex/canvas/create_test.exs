@@ -1,5 +1,5 @@
 defmodule Canvex.Canvas.CreateTest do
-  use Canvex.DataCase
+  use Canvex.DataCase, async: true
 
   alias Canvex.Canvas.Create
   alias Canvex.Schema.Canvas

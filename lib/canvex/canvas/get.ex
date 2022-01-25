@@ -21,8 +21,11 @@ defmodule Canvex.Canvas.Get do
 
   defp do_get_by_id(id) do
     case Repo.get(Canvas, id) do
-      nil -> {:error, :not_found}
-      canvas -> {:ok, canvas |> Canvas.load_values()}
+      nil ->
+        {:error, :not_found}
+
+      canvas = %Canvas{} ->
+        Canvas.load_values(canvas)
     end
   end
 end

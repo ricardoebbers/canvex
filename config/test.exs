@@ -20,8 +20,8 @@ config :canvex, CanvexWeb.Endpoint,
   secret_key_base: "nuTpsWugXPMox0TC0qmCj+8ug6IpZK7NWGHXU0rRlKmJJ40f9BTQdZ6ulL7zkqtA",
   server: false
 
-# Print only warnings and errors during test
 config :logger, :console, level: :none
+config :logger, level: :info
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime

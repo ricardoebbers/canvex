@@ -27,6 +27,8 @@ defmodule Canvex.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import DataCase
+      import ExUnit.CaptureLog
+      import Canvex.Factory
     end
   end
 

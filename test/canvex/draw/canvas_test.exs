@@ -1,51 +1,14 @@
 defmodule Canvex.Draw.CanvasTest do
-  use ExUnit.Case
+  use Canvex.DataCase, async: true
 
   alias Canvex.Draw.Canvas
-
-  describe "new/1" do
-    test "should create a new canvas with given size and fill" do
-      args = %{width: 1, height: 2, fill: '#'}
-
-      assert %Canvas{charlist: '##', height: 2, width: 1} = Canvas.new(args)
-    end
-
-    test "should create a new canvas with given width and charlist" do
-      args = %{width: 1, charlist: '######'}
-
-      assert %Canvas{width: 1, height: 6} = Canvas.new(args)
-    end
-
-    test "should return error when trying to create canvas with non-ascii printable chars as fill" do
-      args = %{width: 1, height: 2, fill: 'ã'}
-
-      assert {:error, _reason} = Canvas.new(args)
-    end
-
-    test "should return error when trying to create canvas with multiple chars as fill" do
-      args = %{width: 1, height: 2, fill: 'abcd'}
-
-      assert {:error, _reason} = Canvas.new(args)
-    end
-
-    test "should return error when trying to create canvas with null fill" do
-      args = %{width: 1, height: 2, fill: nil}
-
-      assert {:error, _reason} = Canvas.new(args)
-    end
-
-    test "should return error when trying to create canvas with '' fill" do
-      args = %{width: 1, height: 2, fill: ''}
-
-      assert {:error, _reason} = Canvas.new(args)
-    end
-  end
+  alias Canvex.Canvas.Create
 
   describe "get_value_at/2" do
     setup do
-      canvas =
-        %{width: 1, height: 3, fill: '#'}
-        |> Canvas.new()
+      {:ok, canvas} =
+        %{width: 1, height: 3, fill: '#', user_id: Ecto.UUID.generate()}
+        |> Create.call()
 
       %{canvas: canvas}
     end
@@ -61,20 +24,20 @@ defmodule Canvex.Draw.CanvasTest do
 
   describe "put_value_at/3" do
     setup do
-      canvas =
-        %{width: 5, height: 2, fill: 'o'}
-        |> Canvas.new()
+      {:ok, canvas} =
+        %{width: 5, height: 2, fill: 'o', user_id: Ecto.UUID.generate()}
+        |> Create.call()
 
       %{canvas: canvas}
     end
 
     test "should update a value of given coordinates on the canvas", %{canvas: canvas} do
-      assert %Canvas{charlist: 'ooooooxooo'} =
+      assert %{charlist: 'ooooooxooo'} =
                Canvas.put_value_at(canvas, {1, 1}, 'x') |> Canvas.update_charlist()
     end
 
     test "should not update out of bounds", %{canvas: canvas} do
-      assert %Canvas{charlist: 'oooooooooo'} = Canvas.put_value_at(canvas, {3, 3}, 'x')
+      assert %{charlist: 'oooooooooo'} = Canvas.put_value_at(canvas, {3, 3}, 'x')
     end
 
     test "should return error when value is a non-ascii printable char", %{canvas: canvas} do

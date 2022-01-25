@@ -5,34 +5,7 @@ defmodule Canvex.Draw.Canvas do
 
   alias Canvex.Draw.Stroke
 
-  defstruct width: 0,
-            height: 0,
-            values: %{{0, 0} => 0},
-            charlist: []
-
   require Logger
-
-  def new(%{width: width, charlist: charlist}) when width > 0 and is_list(charlist) do
-    charlist
-    |> Enum.map(&Stroke.ascii_printable/1)
-    |> build(width)
-  end
-
-  def new(%{width: width, height: height, fill: fill})
-      when width > 0 and height > 0 and not is_nil(fill) do
-    fill
-    |> Stroke.ascii_printable()
-    |> case do
-      error = {:error, _reason} -> error
-      fill -> build(width, height, fill)
-    end
-  end
-
-  def new(params) do
-    message = "Unexpected params, unable to create a canvas."
-    Logger.error([message, " params: #{inspect(params)}"])
-    {:error, message}
-  end
 
   def update_charlist(canvas = %{width: width, height: height, values: values}) do
     charlist =
@@ -83,35 +56,6 @@ defmodule Canvex.Draw.Canvas do
   end
 
   def put_value_at(canvas, _coords, _value), do: canvas
-
-  defp build(width, height, fill) do
-    %__MODULE__{
-      height: height,
-      width: width,
-      values: Map.new(coords(width, height), &{&1, fill}),
-      charlist: List.duplicate(fill, height * width) |> List.to_charlist()
-    }
-  end
-
-  defp build(charlist, width) do
-    values =
-      charlist
-      |> Stream.with_index()
-      |> Stream.map(fn {char, index} -> {{rem(index, width), div(index, width)}, char} end)
-      |> Map.new()
-
-    height =
-      charlist
-      |> length()
-      |> div(width)
-
-    %__MODULE__{
-      height: height,
-      width: width,
-      values: values,
-      charlist: charlist |> List.to_charlist()
-    }
-  end
 
   defp update_value(canvas, coords, value) do
     %{canvas | values: Map.put(canvas.values, coords, value)}

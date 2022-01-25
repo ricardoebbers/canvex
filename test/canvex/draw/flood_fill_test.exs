@@ -1,12 +1,16 @@
 defmodule Canvex.Draw.FloodFillTest do
-  use ExUnit.Case
+  use Canvex.DataCase, async: true
 
   alias Canvex.Draw.{Canvas, FloodFill, Matrix, Rectangle}
+  alias Canvex.Canvas.Create
 
   describe "call/3" do
     setup do
+      {:ok, canvas} =
+        Create.call(%{width: 10, height: 10, fill: ' ', user_id: Ecto.UUID.generate()})
+
       canvas =
-        Canvas.new(%{width: 10, height: 10, fill: ' '})
+        canvas
         |> Rectangle.call(%{x: 1, y: 1, width: 8, height: 5, outline: '*'})
         |> Rectangle.call(%{x: 3, y: 2, width: 3, height: 5, fill: '_', outline: 'o'})
         |> Rectangle.call(%{x: 6, y: 7, width: 3, height: 3, fill: '+'})

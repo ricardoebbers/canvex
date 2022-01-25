@@ -1,10 +1,11 @@
 defmodule Canvex.Draw.LineTest do
-  use ExUnit.Case
+  use Canvex.DataCase, async: true
 
   alias Canvex.Draw.{Canvas, Line, Matrix}
+  alias Canvex.Canvas.Create
 
   setup do
-    canvas = Canvas.new(%{width: 5, height: 5, fill: ' '})
+    {:ok, canvas} = Create.call(%{width: 5, height: 5, fill: ' ', user_id: Ecto.UUID.generate()})
     %{canvas: canvas}
   end
 

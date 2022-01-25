@@ -1,11 +1,13 @@
 defmodule Canvex.Draw.MatrixTest do
-  use ExUnit.Case
+  use Canvex.DataCase, async: true
 
   alias Canvex.Draw.{Canvas, Matrix}
+  alias Canvex.Canvas.Create
 
   describe "matrix/1" do
     test "should return a list of lists of values from canvas" do
-      canvas = Canvas.new(%{width: 5, height: 5, fill: 'o'})
+      {:ok, canvas} =
+        Create.call(%{width: 5, height: 5, fill: 'o', user_id: Ecto.UUID.generate()})
 
       assert [
                'ooooo',
@@ -17,10 +19,10 @@ defmodule Canvex.Draw.MatrixTest do
     end
 
     test "should keep rows and columns ordered correctly" do
-      canvas =
-        %{width: 5, height: 3, fill: 'o'}
-        |> Canvas.new()
-        |> Canvas.put_value_at({1, 2}, 'x')
+      {:ok, canvas} =
+        Create.call(%{width: 5, height: 3, fill: 'o', user_id: Ecto.UUID.generate()})
+
+      canvas = Canvas.put_value_at(canvas, {1, 2}, 'x')
 
       assert [
                'ooooo',

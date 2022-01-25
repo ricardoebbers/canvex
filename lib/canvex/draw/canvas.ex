@@ -34,10 +34,13 @@ defmodule Canvex.Draw.Canvas do
     {:error, message}
   end
 
-  def charlist_from_values(%{width: width, height: height, values: values}) do
-    coords(width, height)
-    |> Enum.map(&Map.get(values, &1))
-    |> List.to_charlist()
+  def update_charlist(canvas = %{width: width, height: height, values: values}) do
+    charlist =
+      coords(width, height)
+      |> Enum.map(&Map.get(values, &1))
+      |> List.to_charlist()
+
+    %{canvas | charlist: charlist}
   end
 
   def values_from_charlist(%{width: width, charlist: charlist})
@@ -125,13 +128,8 @@ defmodule Canvex.Draw.Canvas do
     }
   end
 
-  defp update_value(canvas, coords = {x, y}, value) do
-    %{
-      canvas
-      | values: Map.put(canvas.values, coords, value),
-        charlist:
-          List.replace_at(canvas.charlist, y * canvas.width + x, value) |> List.to_charlist()
-    }
+  defp update_value(canvas, coords, value) do
+    %{canvas | values: Map.put(canvas.values, coords, value)}
   end
 
   defp coords(width, height), do: for(y <- 0..(height - 1), x <- 0..(width - 1), do: {x, y})

@@ -69,7 +69,8 @@ defmodule Canvex.Draw.CanvasTest do
     end
 
     test "should update a value of given coordinates on the canvas", %{canvas: canvas} do
-      assert %Canvas{charlist: 'ooooooxooo'} = Canvas.put_value_at(canvas, {1, 1}, 'x')
+      assert %Canvas{charlist: 'ooooooxooo'} =
+               Canvas.put_value_at(canvas, {1, 1}, 'x') |> Canvas.update_charlist()
     end
 
     test "should not update out of bounds", %{canvas: canvas} do

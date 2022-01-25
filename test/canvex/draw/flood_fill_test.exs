@@ -1,8 +1,8 @@
 defmodule Canvex.Draw.FloodFillTest do
   use Canvex.DataCase, async: true
 
-  alias Canvex.Draw.{Canvas, FloodFill, Matrix, Rectangle}
   alias Canvex.Canvas.Create
+  alias Canvex.Draw.{FloodFill, Rectangle}
 
   describe "call/3" do
     setup do

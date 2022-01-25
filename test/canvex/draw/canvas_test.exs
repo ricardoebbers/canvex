@@ -1,8 +1,8 @@
 defmodule Canvex.Draw.CanvasTest do
   use Canvex.DataCase, async: true
 
-  alias Canvex.Draw.Canvas
   alias Canvex.Canvas.Create
+  alias Canvex.Draw.Canvas
 
   describe "get_value_at/2" do
     setup do

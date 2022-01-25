@@ -3,7 +3,6 @@ defmodule Canvex.Canvas.Get do
 
   alias Canvex.Repo
   alias Canvex.Schema.Canvas
-  alias Canvex.Draw.Canvas, as: DrawCanvas
 
   require Logger
 
@@ -26,11 +25,7 @@ defmodule Canvex.Canvas.Get do
         {:error, :not_found}
 
       canvas = %Canvas{} ->
-        load_values(canvas)
+        {:ok, Canvas.load_values(canvas)}
     end
-  end
-
-  defp load_values(canvas = %{charlist: charlist}) do
-    {:ok, %{DrawCanvas.values_from_charlist(canvas) | charlist: List.to_charlist(charlist)}}
   end
 end

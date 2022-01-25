@@ -1,8 +1,8 @@
 defmodule Canvex.Draw.RectangleTest do
   use Canvex.DataCase, async: true
 
-  alias Canvex.Draw.{Canvas, Matrix, Rectangle}
   alias Canvex.Canvas.Create
+  alias Canvex.Draw.Rectangle
 
   setup do
     {:ok, canvas} = Create.call(%{width: 5, height: 5, fill: ' ', user_id: Ecto.UUID.generate()})

@@ -1,8 +1,8 @@
 defmodule Canvex.Draw.LineTest do
   use Canvex.DataCase, async: true
 
-  alias Canvex.Draw.{Canvas, Line, Matrix}
   alias Canvex.Canvas.Create
+  alias Canvex.Draw.Line
 
   setup do
     {:ok, canvas} = Create.call(%{width: 5, height: 5, fill: ' ', user_id: Ecto.UUID.generate()})

@@ -16,17 +16,6 @@ defmodule Canvex.Draw.Canvas do
     %{canvas | charlist: charlist}
   end
 
-  def values_from_charlist(canvas = %{width: width, charlist: charlist})
-      when width > 0 and is_list(charlist) do
-    values =
-      charlist
-      |> Stream.with_index()
-      |> Stream.map(fn {char, index} -> {{rem(index, width), div(index, width)}, char} end)
-      |> Map.new()
-
-    Map.put(canvas, :values, values)
-  end
-
   def get_value_at(canvas, {x, y}) do
     Map.get(canvas.values, {x, y})
   end

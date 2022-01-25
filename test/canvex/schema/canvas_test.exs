@@ -2,25 +2,7 @@ defmodule Canvex.Draw.CanvasTest do
   use Canvex.DataCase, async: true
 
   alias Canvex.Canvas.Create
-  alias Canvex.Draw.Canvas
-
-  describe "get_value_at/2" do
-    setup do
-      {:ok, canvas} =
-        %{width: 1, height: 3, fill: '#', user_id: Ecto.UUID.generate()}
-        |> Create.call()
-
-      %{canvas: canvas}
-    end
-
-    test "should get a value from given coordinates of a canvas", %{canvas: canvas} do
-      assert '#' == Canvas.get_value_at(canvas, {0, 2})
-    end
-
-    test "should return nil if given coordinates are out of bounds", %{canvas: canvas} do
-      assert nil == Canvas.get_value_at(canvas, {10, 10})
-    end
-  end
+  alias Canvex.Schema.Canvas
 
   describe "put_value_at/3" do
     setup do
@@ -32,12 +14,12 @@ defmodule Canvex.Draw.CanvasTest do
     end
 
     test "should update a value of given coordinates on the canvas", %{canvas: canvas} do
-      assert %{charlist: 'ooooooxooo'} =
-               Canvas.put_value_at(canvas, {1, 1}, 'x') |> Canvas.update_charlist()
+      assert %{values: %{{1, 1} => 'x'}} = Canvas.put_value_at(canvas, {1, 1}, 'x')
     end
 
     test "should not update out of bounds", %{canvas: canvas} do
-      assert %{charlist: 'oooooooooo'} = Canvas.put_value_at(canvas, {3, 3}, 'x')
+      canvas = Canvas.put_value_at(canvas, {3, 3}, 'x')
+      refute Map.has_key?(canvas.values, {3, 3})
     end
 
     test "should return error when value is a non-ascii printable char", %{canvas: canvas} do

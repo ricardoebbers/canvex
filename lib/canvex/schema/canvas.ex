@@ -6,8 +6,7 @@ defmodule Canvex.Schema.Canvas do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Canvex.Draw.Canvas, as: DrawCanvas
-  alias Canvex.Schema.Canvas
+  alias Canvex.Draw.Stroke
   alias Canvex.Type.ASCIIPrintable
 
   require Logger
@@ -39,16 +38,6 @@ defmodule Canvex.Schema.Canvas do
     timestamps()
   end
 
-  def update_changeset(canvas, other = %Canvas{}), do: update_changeset(canvas, get_attrs(other))
-
-  def update_changeset(canvas, attrs) do
-    canvas
-    |> cast(attrs, [:values])
-    |> validate_required(@required_update)
-    |> update_charlist()
-  end
-
-  @doc false
   def changeset(canvas, attrs) do
     canvas
     |> cast(attrs, @fields)
@@ -56,6 +45,16 @@ defmodule Canvex.Schema.Canvas do
     |> validate_number(:height, greater_than: 0, less_than_or_equal_to: 500)
     |> validate_number(:width, greater_than: 0, less_than_or_equal_to: 500)
     |> create_values()
+  end
+
+  def update_changeset(canvas, other = %__MODULE__{}),
+    do: update_changeset(canvas, get_attrs(other))
+
+  def update_changeset(canvas, attrs) do
+    canvas
+    |> cast(attrs, [:values])
+    |> validate_required(@required_update)
+    |> update_charlist()
   end
 
   def load_values(canvas = %{width: width, charlist: charlist}) do
@@ -70,12 +69,37 @@ defmodule Canvex.Schema.Canvas do
     |> Map.put(:charlist, List.to_charlist(charlist))
   end
 
-  defp update_charlist(changeset = %{data: data, changes: changes}) do
-    canvas =
-      Map.merge(data, changes)
-      |> DrawCanvas.update_charlist()
+  def load_charlist(canvas = %{width: width, height: height, values: values}) do
+    charlist =
+      coords(width, height)
+      |> Enum.map(&Map.get(values, &1))
+      |> List.to_charlist()
 
-    put_change(changeset, :charlist, canvas.charlist)
+    Map.put(canvas, :charlist, charlist)
+  end
+
+  def put_value_at(canvas = %{width: width, height: height}, coords = {x, y}, value)
+      when x >= 0 and x < width and y >= 0 and y < height do
+    value
+    |> Stroke.ascii_printable()
+    |> case do
+      error = {:error, _reason} ->
+        error
+
+      value ->
+        %{canvas | values: Map.put(canvas.values, coords, value)}
+    end
+  end
+
+  def put_value_at(canvas, _coords, _value), do: canvas
+
+  defp update_charlist(changeset = %{data: data, changes: changes}) do
+    %{charlist: charlist} =
+      data
+      |> Map.merge(changes)
+      |> load_charlist()
+
+    put_change(changeset, :charlist, charlist)
   end
 
   defp create_values(canvas = %{valid?: false}), do: canvas

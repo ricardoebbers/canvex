@@ -17,6 +17,7 @@ defmodule Canvex.DataCase do
   use ExUnit.CaseTemplate
 
   alias Canvex.Repo
+  alias Canvex.Schema.Canvas
   alias Ecto.Adapters.SQL.Sandbox
 
   using do
@@ -57,7 +58,7 @@ defmodule Canvex.DataCase do
   end
 
   def matrix(canvas) do
-    %{charlist: charlist} = Canvex.Draw.Canvas.update_charlist(canvas)
+    %{charlist: charlist} = Canvas.load_charlist(canvas)
 
     Enum.chunk_every(charlist, canvas.width)
   end

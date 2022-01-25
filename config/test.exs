@@ -20,7 +20,7 @@ config :canvex, CanvexWeb.Endpoint,
   secret_key_base: "nuTpsWugXPMox0TC0qmCj+8ug6IpZK7NWGHXU0rRlKmJJ40f9BTQdZ6ulL7zkqtA",
   server: false
 
-config :logger, :console, level: :debug
+config :logger, :console, level: :none
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime

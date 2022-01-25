@@ -7,7 +7,7 @@ defmodule Canvex.Draw.Line do
   but can draw to the left and up by passing a negative `size`.
   """
 
-  alias Canvex.Draw.Canvas
+  alias Canvex.Schema.Canvas
 
   def vertical(canvas, %{x: start_x, y: start_y, size: size, stroke: stroke})
       when size >= 0 do

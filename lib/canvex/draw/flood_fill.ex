@@ -4,10 +4,10 @@ defmodule Canvex.Draw.FloodFill do
 
   Inspired by https://en.wikipedia.org/wiki/Flood_fill
   """
-  alias Canvex.Draw.Canvas
+  alias Canvex.Schema.Canvas
 
-  def call(canvas, %{x: x, y: y, fill: fill}) do
-    do_fill(canvas, fill, Canvas.get_value_at(canvas, {x, y}), [{x, y}])
+  def call(canvas = %{values: values}, %{x: x, y: y, fill: fill}) do
+    do_fill(canvas, fill, Map.get(values, {x, y}), [{x, y}])
   end
 
   defp do_fill(canvas, _fill, _target_fill, []) do
@@ -15,13 +15,13 @@ defmodule Canvex.Draw.FloodFill do
   end
 
   defp do_fill(
-         canvas = %{width: width, height: height},
+         canvas = %{values: values, width: width, height: height},
          fill,
          target_fill,
          [coords = {x, y} | stack]
        )
        when x >= 0 and x < width and y >= 0 and y < height do
-    current_fill = Canvas.get_value_at(canvas, coords)
+    current_fill = Map.get(values, coords)
 
     {canvas, stack} = maybe_update(canvas, fill, current_fill, target_fill, coords, stack)
 

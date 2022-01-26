@@ -103,7 +103,12 @@ The web service consists of three endpoints:
 `GET /api/canvas/{id}`: Shows a canvas, given it's UUID
 `PUT /api/canvas/{id}/draw`: Draws onto a canvas, given it's UUID
 
-The complete API documentation is done with the `openapi` specification and is available as a Swagger UI on the root `/` of the application.
+The complete API documentation was done with the `openapi` specification and is available as a Swagger UI on the root `/` of the application.
+
+Also, you can see the canvas being updated live on your browser by going to `/canvas/{id}`. Here's an example of Swagger UI and Live View side by side:
+![Live view demo](./documentation/live_view_demo.gif)
+
+
 
 ### Locally
 

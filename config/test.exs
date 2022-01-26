@@ -1,10 +1,11 @@
 import Config
 
 config :canvex, Canvex.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "canvex_test#{System.get_env("MIX_TEST_PARTITION")}",
+  url:
+    System.get_env(
+      "DATABASE_URL",
+      "postgres://postgres:postgres@localhost:5432/canvex_test#{System.get_env("MIX_TEST_PARTITION")}"
+    ),
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
 

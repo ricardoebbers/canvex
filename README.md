@@ -97,6 +97,14 @@ Here is an example of a flood fill operation:
 
 ## Running instructions
 
+The web service consists of three endpoints:
+
+`POST /api/canvas`: Creates a canvas
+`GET /api/canvas/{id}`: Shows a canvas, given it's UUID
+`PUT /api/canvas/{id}/draw`: Draws onto a canvas, given it's UUID
+
+The complete API documentation is done with the `openapi` specification and is available as a Swagger UI on the root `/` of the application.
+
 ### Locally
 
 #### Prerequisites
@@ -106,19 +114,59 @@ Here is an example of a flood fill operation:
 
 #### Step-by-step
 
-* Clone this repository
-* 
-TODO: describe all steps
+```
+# Clone this repository
+git clone https://github.com/ricardoebbers/canvex.git
+
+# Change directory to the repository folder
+cd canvex
+
+# Spin up docker containers
+docker-compose up -d
+
+# Create the database and run migrations
+docker-compose run web mix ecto.setup
+#     If you see a message 'The database for Canvex.Repo couldn't be created'
+#     it's because the postgres container wasn't ready yet.
+#     Try running the command below again
+
+# Open your browser on localhost:4000 to find the Swagger UI API documentation
+xdg-open http://localhost:4000
+# The command above should work on ubuntu ;)
+
+# Clean up
+docker-compose down --volumes
+```
 
 #### Postman collection
 
 For convenience a [postman collection](./postman/) is provided with all endpoints and requests examples.
 
-
 ### Gigalixir
 
-TODO: deploy to Gigalixir
+This project is available at [canvex.gigalixirapp.com](https://canvex.gigalixirapp.com/).
+
+On the root path `/` you can find a Swagger UI with the documentation of the API and examples ready for testing.
+
+**Attention**: Gigalixir free tier is very limited in terms of memory available, so you might find yourself looking at a `502 Bad Gateway` or a `503 Service Temporarily Unavailable` after trying to draw a canvas that is too big (larger than 350x350 or so). If that happens, it's because the server ran out of memory. In a minute or two the server will be up and running again, but you may have lost your art :(
+
+For better validation of the project and visualization of the canvas on the Swagger UI, I suggest keeping the canvas size below 150x150.
+
 ## Overview
+
+### Dependencies
+
+This is a Phoenix project and have the usual dependencies of one generated with a frontend.
+
+Besides that, I've added the following:
+* [credo](https://github.com/rrrene/credo) for static code analysis and linting
+* [dialyxir](https://github.com/jeremyjh/dialyxir) for static analysis of `typespecs`
+* [excoveralls](https://github.com/parroty/excoveralls) for code coverage and reporting
+* [mix_test_watch](https://github.com/lpil/mix-test.watch) to run the test suite every time the code is changed
+* [ex_machina](https://github.com/thoughtbot/ex_machina) as a factory for testing
+* [open_api_spex](https://github.com/open-api-spex/open_api_spex) for API specification and Swagger UI generation
+
+### Project structure
 
 The implementation follows the Phoenix convention of separating Web and internal domain:
   - canvex: internal domain
@@ -129,4 +177,6 @@ The internal domain is separated into three main parts:
   - draw: holds all the logic behind "drawing" on a canvas
   - schema: holds the `canvas` schema, which validates the data before persisting.
 
-TODO: add more details
+### Testing
+
+All tests can be run with `mix test` locally.

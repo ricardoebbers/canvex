@@ -1,14 +1,15 @@
 defmodule Canvex.PubSub do
+  @moduledoc """
+  PubSub channel to allow updating the live view of a canvas
+  """
   alias Phoenix.PubSub
-
-  @topic "canvas_draw"
 
   def subscribe(id), do: PubSub.subscribe(__MODULE__, topic(id))
 
-  def broadcast_draw(canvas) do
+  def broadcast(canvas) do
     PubSub.broadcast(__MODULE__, topic(canvas.id), %{canvas: canvas})
     canvas
   end
 
-  defp topic(id), do: "#{@topic}:#{id}"
+  defp topic(id), do: "canvas:#{id}"
 end

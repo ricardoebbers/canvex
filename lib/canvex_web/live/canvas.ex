@@ -1,4 +1,10 @@
 defmodule CanvexWeb.Canvas do
+  @moduledoc """
+  Live View for a canvas.
+
+  Subscribes to the canvas topic on mounting, so it can update
+  the client view when the canvas is modified.
+  """
   use CanvexWeb, :live_view
 
   alias Canvex.PubSub

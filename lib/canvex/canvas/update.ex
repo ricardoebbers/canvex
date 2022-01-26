@@ -4,6 +4,7 @@ defmodule Canvex.Canvas.Update do
   """
 
   alias Canvex.Canvas.Get
+  alias Canvex.PubSub
   alias Canvex.Repo
   alias Canvex.Schema.Canvas
 
@@ -26,5 +27,13 @@ defmodule Canvex.Canvas.Update do
     canvas
     |> Canvas.update_changeset(attrs)
     |> Repo.update()
+    |> case do
+      {:ok, canvas} ->
+        PubSub.broadcast(canvas)
+        {:ok, canvas}
+
+      error = {:error, _changeset} ->
+        error
+    end
   end
 end

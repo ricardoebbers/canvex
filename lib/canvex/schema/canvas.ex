@@ -7,7 +7,6 @@ defmodule Canvex.Schema.Canvas do
   import Ecto.Changeset
 
   alias Canvex.Draw.Stroke
-  alias Canvex.PubSub
   alias Canvex.Type.ASCIIPrintable
   alias __MODULE__
 
@@ -86,7 +85,7 @@ defmodule Canvex.Schema.Canvas do
         error
 
       value ->
-        %{canvas | values: Map.put(canvas.values, coords, value)} |> PubSub.broadcast_draw()
+        %{canvas | values: Map.put(canvas.values, coords, value)}
     end
   end
 

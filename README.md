@@ -185,10 +185,28 @@ Besides that, I've added the following:
 ### Project structure
 
 The implementation follows the Phoenix convention of separating Web and internal domain:
-  - canvex: internal domain
-  - canvex_web: default MVC architecture
+```
+lib
+├── canvex     # internal domain folder
+├── canvex.ex  # domain API
+└── canvex_web # default MVC architecture folder
+```
 
-The internal domain is separated into three main parts:
-  - canvas: holds all operations that interfaces with the repository/database (create, get, update)
-  - draw: holds all the logic behind "drawing" on a canvas
-  - schema: holds the `canvas` schema, which validates the data before persisting.
+The internal domain is divided as below:
+```
+canvex
+├── canvas                  # holds all operations that interfaces with the repository/database
+│   ├── create.ex
+│   ├── get.ex
+│   └── update.ex
+├── draw                    # holds all the logic behind "drawing" on a canvas
+│   ├── flood_fill.ex
+│   ├── line.ex
+│   ├── rectangle.ex
+│   └── stroke.ex
+├── draw.ex                 # provides a common interface for drawing operations
+├── schema                  
+│   └── canvas.ex           # is an Ecto Schema, which holds and validates the data before persisting
+└── type
+    └── ascii_printable.ex  # an Ecto Type to cast and validate that only ASCII chars are allowed
+```

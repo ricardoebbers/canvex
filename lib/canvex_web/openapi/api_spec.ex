@@ -7,10 +7,10 @@ defmodule CanvexWeb.OpenAPI.ApiSpec do
   @impl OpenApi
   def spec do
     server =
-      if Mix.env() == :prod do
-        %Server{url: "https://canvex.gigalixirapp.com:443", description: "Production"}
-      else
+      if System.get_env("MIX_ENV") == "dev" do
         Server.from_endpoint(Endpoint)
+      else
+        %Server{url: "https://canvex.gigalixirapp.com/", description: "Production"}
       end
 
     %OpenApi{

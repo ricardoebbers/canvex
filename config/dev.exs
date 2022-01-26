@@ -1,6 +1,5 @@
 import Config
 
-# Configure your database
 config :canvex, Canvex.Repo,
   url: System.get_env("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/canvex_dev"),
   show_sensitive_data_on_connection_error: true,

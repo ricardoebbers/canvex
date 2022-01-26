@@ -37,5 +37,3 @@ npm-debug.log
 /priv/plts/*.plt.hash
 
 instructions.md
-
-**/*.gz

@@ -1,21 +1,29 @@
 <table>
     <tr>
       <th>id</th>
-      <td><%= assigns.canvas.id %></td>
+      <td><%= @canvas.id %></td>
     </tr>
     <tr>
       <th>user_id</th>
-      <td><%= assigns.canvas.user_id %></td>
+      <td><%= @canvas.user_id %></td>
     </tr>
     <tr>
       <th>width</th>
-      <td><%= assigns.canvas.width %></td>
+      <td><%= @canvas.width %></td>
     </tr>
     <tr>
       <th>height</th>
-      <td><%= assigns.canvas.height %></td>
+      <td><%= @canvas.height %></td>
     </tr>
 </table>
 <table>
-<%= live_component(__MODULE__.Row, %{width: assigns.canvas.width, height: assigns.canvas.height, values: assigns.canvas.values}, id: "canvas_table") %>
+  <%= for y <- 0..(@canvas.height - 1) do %>
+      <tr>
+          <%= for x <- 0..(@canvas.width - 1) do %>
+              <td style="text-align: center; padding: 10px;">
+                <%= Map.get(@canvas.values, {x, y}) %>
+              </td>
+          <% end %>
+      </tr>
+  <% end %>
 </table>

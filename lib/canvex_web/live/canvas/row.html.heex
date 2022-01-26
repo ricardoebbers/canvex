@@ -1,5 +1,0 @@
-    <%= for y <- 0..(assigns.height - 1) do %>
-        <tr>
-            <%= live_component(CanvexWeb.Canvas.Cell, %{row: y, values: assigns.values, width: assigns.width}, id: "row_#{y}") %>
-        </tr>
-    <% end %>

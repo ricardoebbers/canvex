@@ -85,5 +85,12 @@ defmodule Canvex.Draw.FloodFillTest do
       assert matrix(canvas) ==
                FloodFill.call(canvas, %{x: -2, y: 2, fill: 'x'}) |> matrix()
     end
+
+    test "should do nothing when fill is a string equivalent to the target char", %{
+      canvas: canvas
+    } do
+      assert matrix(canvas) ==
+               FloodFill.call(canvas, %{x: 0, y: 0, fill: " "}) |> matrix()
+    end
   end
 end

@@ -75,7 +75,7 @@ defmodule Canvex.Schema.Canvas do
     Map.put(canvas, :charlist, charlist)
   end
 
-  @spec put_value_at(t() | any(), {integer, integer}, char()) :: t() | {:error, term()}
+  @spec put_value_at(t() | any(), {integer, integer}, any) :: t() | {:error, term()}
   def put_value_at(canvas = %Canvas{width: width, height: height}, coords = {x, y}, value)
       when x >= 0 and x < width and y >= 0 and y < height do
     value

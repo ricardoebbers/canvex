@@ -1,11 +1,14 @@
 defmodule Canvex.Canvas.Get do
-  @moduledoc false
+  @moduledoc """
+  Fetches `canvas` from database given it's `id`.
+  """
 
   alias Canvex.Repo
   alias Canvex.Schema.Canvas
 
   require Logger
 
+  @spec by_id(Ecto.UUID.t() | any()) :: {:ok, Canvas.t()} | {:error, :bad_request | :not_found}
   def by_id(nil), do: {:error, :bad_request}
 
   def by_id(id) do

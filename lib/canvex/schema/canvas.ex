@@ -8,18 +8,11 @@ defmodule Canvex.Schema.Canvas do
 
   alias Canvex.Draw.Stroke
   alias Canvex.Type.ASCIIPrintable
+  alias __MODULE__
 
   require Logger
 
-  @type t :: %__MODULE__{
-          id: Ecto.UUID,
-          charlist: {:array, ASCIIPrintable},
-          fill: ASCIIPrintable,
-          height: :integer,
-          values: :map,
-          width: :integer,
-          user_id: Ecto.UUID
-        }
+  @type t :: %Canvas{}
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -38,7 +31,8 @@ defmodule Canvex.Schema.Canvas do
     timestamps()
   end
 
-  def changeset(canvas, attrs) do
+  @spec changeset(t(), map) :: Ecto.Changeset.t()
+  def changeset(canvas = %Canvas{}, attrs) do
     canvas
     |> cast(attrs, @fields)
     |> validate_required(@required_new)
@@ -47,17 +41,19 @@ defmodule Canvex.Schema.Canvas do
     |> create_values()
   end
 
-  def update_changeset(canvas, other = %__MODULE__{}),
+  @spec update_changeset(t(), t() | map()) :: Ecto.Changeset.t()
+  def update_changeset(canvas = %Canvas{}, other = %Canvas{}),
     do: update_changeset(canvas, get_attrs(other))
 
-  def update_changeset(canvas, attrs) do
+  def update_changeset(canvas = %Canvas{}, attrs) do
     canvas
     |> cast(attrs, [:values])
     |> validate_required(@required_update)
     |> update_charlist()
   end
 
-  def load_values(canvas = %{width: width, charlist: charlist}) do
+  @spec load_values(t()) :: t()
+  def load_values(canvas = %Canvas{width: width, charlist: charlist}) do
     values =
       charlist
       |> Stream.with_index()
@@ -69,7 +65,8 @@ defmodule Canvex.Schema.Canvas do
     |> Map.put(:charlist, List.to_charlist(charlist))
   end
 
-  def load_charlist(canvas = %{width: width, height: height, values: values}) do
+  @spec load_charlist(t()) :: t()
+  def load_charlist(canvas = %Canvas{width: width, height: height, values: values}) do
     charlist =
       coords(width, height)
       |> Enum.map(&Map.get(values, &1))
@@ -78,7 +75,8 @@ defmodule Canvex.Schema.Canvas do
     Map.put(canvas, :charlist, charlist)
   end
 
-  def put_value_at(canvas = %{width: width, height: height}, coords = {x, y}, value)
+  @spec put_value_at(t() | any(), {integer, integer}, char()) :: t() | {:error, term()}
+  def put_value_at(canvas = %Canvas{width: width, height: height}, coords = {x, y}, value)
       when x >= 0 and x < width and y >= 0 and y < height do
     value
     |> Stroke.ascii_printable()
@@ -91,9 +89,9 @@ defmodule Canvex.Schema.Canvas do
     end
   end
 
-  def put_value_at(canvas, _coords, _value), do: canvas
+  def put_value_at(other, _coords, _value), do: other
 
-  defp update_charlist(changeset = %{data: data, changes: changes}) do
+  defp update_charlist(changeset = %Ecto.Changeset{data: data, changes: changes}) do
     %{charlist: charlist} =
       data
       |> Map.merge(changes)
@@ -102,17 +100,19 @@ defmodule Canvex.Schema.Canvas do
     put_change(changeset, :charlist, charlist)
   end
 
-  defp create_values(canvas = %{valid?: false}), do: canvas
+  defp create_values(changeset = %Ecto.Changeset{valid?: false}), do: changeset
 
-  defp create_values(canvas = %{changes: %{width: width, height: height, fill: fill}}) do
-    canvas
+  defp create_values(
+         changeset = %Ecto.Changeset{changes: %{width: width, height: height, fill: fill}}
+       ) do
+    changeset
     |> put_change(:charlist, List.duplicate(fill, height * width) |> List.to_charlist())
     |> put_change(:values, Map.new(coords(width, height), &{&1, fill}))
   end
 
   defp coords(width, height), do: for(y <- 0..(height - 1), x <- 0..(width - 1), do: {x, y})
 
-  defp get_attrs(canvas) do
+  defp get_attrs(canvas = %Canvas{}) do
     @fields
     |> Enum.map(fn key -> {key, Map.get(canvas, key)} end)
     |> Map.new()

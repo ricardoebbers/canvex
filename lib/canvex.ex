@@ -4,8 +4,6 @@ defmodule Canvex do
 
   ## Canvas
 
-  Canvases are identifiable with a global unique identifier in the form of an UUID.
-
   Canvases are represented as a matrix of `chars`, all being ASCII printable,
   with coordinates that start from the top left, like this:
   ```
@@ -20,20 +18,23 @@ defmodule Canvex do
   (y axis)
   ```
 
+  Canvases are identifiable with a global unique identifier in the form of an UUID.
+
+  To create a `canvas` refer to `Canvex.new_canvas/1`.
+
+  To fetch a previously created canvas from the database refer to `Canvex.get_canvas_by_id/1`.
+
   ## Drawing
 
   It's possible to do drawings on a canvas with ASCII printable `chars`.
-
-  To create refer to `Canvex.new_canvas/1`.
-
-  It's possible to fetch a previously created canvas from the database
-  by calling `Canvex.get_canvas_by_id/1`.
 
   Refer to `Canvex.draw_on_canvas/2` to know which drawing operations are possible.
   """
   alias Canvex.Canvas.{Create, Get}
   alias Canvex.Draw
-  alias Canvex.Schema.Canvas, as: CanvasSchema
+  alias Canvex.Schema.Canvas
+
+  @type canvas :: Canvas.t()
 
   @doc """
   Creates a `canvas` given a map containing `width`, `height`, `fill`, and an UUID as `user_id`.
@@ -47,7 +48,7 @@ defmodule Canvex do
 
       iex> {:error, _changeset} = Canvex.new_canvas(%{})
   """
-  @spec new_canvas(map) :: {:ok, CanvasSchema.t()} | {:error, Ecto.Changeset.t()}
+  @spec new_canvas(map) :: {:ok, Canvas.t()} | {:error, Ecto.Changeset.t()}
   defdelegate new_canvas(attrs), to: Create, as: :call
 
   @doc """
@@ -65,7 +66,7 @@ defmodule Canvex do
 
         iex> {:error, :not_found} = Canvex.get_canvas_by_id(Ecto.UUID.generate())
   """
-  @spec get_canvas_by_id(String.t()) :: {:ok, any()} | {:error, term()}
+  @spec get_canvas_by_id(Ecto.UUID.t() | any()) :: {:ok, Canvas.t()} | {:error, any()}
   defdelegate get_canvas_by_id(id), to: Get, as: :by_id
 
   @doc """
@@ -121,7 +122,7 @@ defmodule Canvex do
   A flood fill operation draws the `fill` character to the start `x` and `y` coordinates, and continues
   to attempt drawing the character around (up, down, left, right) in each direction from the
   position it was drawn at, as long as a different character, or a border of the canvas, is not reached.
-
+  ```
   # a canvas with width = 10, height = 5, fill = 'o'
   # after a draw operation with command = "rectangle",
   # x = 2, y = 1, width = 5, height = 3, fill = '-', outline = 'X'
@@ -142,5 +143,6 @@ defmodule Canvex do
       iex> flood_fill_attrs = %{command: "flood_fill", x: 0, y: 0, fill: "x"}
       iex> _canvas = Canvex.draw_on_canvas(id, flood_fill_attrs)
   """
+  @spec draw_on_canvas(Ecto.UUID.t() | any(), map()) :: {:ok, Canvas.t()} | {:error, term()}
   defdelegate draw_on_canvas(canvas_id, params), to: Draw, as: :call
 end

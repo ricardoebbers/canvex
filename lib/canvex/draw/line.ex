@@ -9,6 +9,7 @@ defmodule Canvex.Draw.Line do
 
   alias Canvex.Schema.Canvas
 
+  @spec vertical(Canvas.t(), map()) :: Canvas.t()
   def vertical(canvas, %{x: start_x, y: start_y, size: size, stroke: stroke})
       when size >= 0 do
     coords = for y <- start_y..(start_y + size - 1), do: {start_x, y}

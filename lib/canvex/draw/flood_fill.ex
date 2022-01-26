@@ -4,8 +4,10 @@ defmodule Canvex.Draw.FloodFill do
 
   Inspired by https://en.wikipedia.org/wiki/Flood_fill
   """
+
   alias Canvex.Schema.Canvas
 
+  @spec call(Canvas.t(), map()) :: Canvas.t()
   def call(canvas = %{values: values}, %{x: x, y: y, fill: fill}) do
     do_fill(canvas, fill, Map.get(values, {x, y}), [{x, y}])
   end

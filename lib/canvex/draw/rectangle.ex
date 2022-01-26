@@ -6,10 +6,13 @@ defmodule Canvex.Draw.Rectangle do
   each __side__ of the rectangle, and __fills__ the rectangles by
   drawing parallel vertical lines.
   """
+
   alias Canvex.Draw.Line
+  alias Canvex.Schema.Canvas
 
   require Logger
 
+  @spec call(Canvas.t(), map()) :: Canvas.t()
   def call(canvas, args = %{fill: _fill, outline: _outline}) do
     canvas
     |> fill_rectangle(args)

@@ -1,10 +1,13 @@
 defmodule Canvex.Canvas.Update do
-  @moduledoc false
+  @moduledoc """
+  Updates a `canvas` on the database given `attrs` or an updated `canvas`.
+  """
 
   alias Canvex.Canvas.Get
   alias Canvex.Repo
   alias Canvex.Schema.Canvas
 
+  @spec call(Canvas.t() | map()) :: {:ok, Canvas.t()} | {:error, :bad_request | :not_found}
   def call(attrs = %{"id" => id}), do: do_call(id, attrs)
 
   def call(canvas = %Canvas{id: id}), do: do_call(id, canvas)
@@ -14,12 +17,12 @@ defmodule Canvex.Canvas.Update do
   defp do_call(id, attrs) do
     Get.by_id(id)
     |> case do
-      {:ok, canvas} -> do_update(canvas, attrs)
+      {:ok, canvas = %Canvas{}} -> do_update(canvas, attrs)
       error -> error
     end
   end
 
-  defp do_update(canvas, attrs) do
+  defp do_update(canvas = %Canvas{}, attrs) do
     canvas
     |> Canvas.update_changeset(attrs)
     |> Repo.update()

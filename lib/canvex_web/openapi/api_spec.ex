@@ -8,6 +8,7 @@ defmodule CanvexWeb.OpenAPI.ApiSpec do
   def spec do
     %OpenApi{
       servers: [
+        %Server{url: "https://canvex.gigalixirapp.com:443", description: "Released"},
         Server.from_endpoint(Endpoint)
       ],
       info: %Info{

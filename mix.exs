@@ -58,11 +58,18 @@ defmodule Canvex.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
+
+      # Static code analysis and linter
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.10", only: :test},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
+
+      # Code coverage and test helpers
+      {:excoveralls, "~> 0.10", only: :test},
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
-      {:ex_machina, "~> 2.7.0", only: :test}
+      {:ex_machina, "~> 2.7.0", only: :test},
+
+      # API documentation
+      {:open_api_spex, "~> 3.11"}
     ]
   end
 
@@ -79,7 +86,8 @@ defmodule Canvex.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.deploy": ["esbuild default --minify", "phx.digest"],
-      quality: ["format", "dialyzer", "credo --strict", "test.watch --stale"]
+      quality: ["format", "dialyzer", "credo --strict", "test.watch --stale"],
+      openapi: ["openapi.spec.json --spec CanvexWeb.OpenAPI.ApiSpec"]
     ]
   end
 end

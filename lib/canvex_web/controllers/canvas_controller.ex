@@ -1,8 +1,10 @@
 defmodule CanvexWeb.CanvasController do
   use CanvexWeb, :controller
-  action_fallback CanvexWeb.FallbackController
+  use CanvexWeb.OpenAPI.CanvasControllerSpec
 
   alias CanvexWeb.Commands.Draw
+
+  action_fallback CanvexWeb.FallbackController
 
   @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, Ecto.Changeset.t()}
   def create(conn, params) do

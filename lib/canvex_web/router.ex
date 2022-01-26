@@ -12,19 +12,19 @@ defmodule CanvexWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug OpenApiSpex.Plug.PutApiSpec, module: CanvexWeb.OpenAPI.ApiSpec
   end
 
-  scope "/", CanvexWeb do
-    pipe_through :browser
-
-    get "/", PageController, :index
+  scope "/" do
+    get "/", OpenApiSpex.Plug.SwaggerUI, path: "/api/openapi"
   end
 
-  scope "/api", CanvexWeb do
+  scope "/api" do
     pipe_through :api
 
-    resources "/canvas", CanvasController, only: [:create, :show]
-    put "/canvas/:id/draw", CanvasController, :draw
+    resources "/canvas", CanvexWeb.CanvasController, only: [:create, :show]
+    put "/canvas/:id/draw", CanvexWeb.CanvasController, :draw
+    get "/openapi", OpenApiSpex.Plug.RenderSpec, []
   end
 
   # Other scopes may use custom stacks.

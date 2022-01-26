@@ -50,7 +50,7 @@ defmodule CanvexWeb.Commands.Draw do
   defp do_validate(params, types, required) do
     {%{}, types}
     |> cast(params, Map.keys(types))
-    |> validate_required(required)
+    |> validate_required(required, trim: false)
   end
 
   defp validate_command(changeset) do

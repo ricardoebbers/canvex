@@ -143,6 +143,25 @@ defmodule CanvexWeb.CanvasControllerTest do
              } = json_response(conn, 200)["data"]
     end
 
+    test "should render canvas after flood fill when fill is a blank space", %{conn: conn, id: id} do
+      params = string_params_for(:flood_fill)
+      conn = put(conn, Routes.canvas_path(conn, :draw, id), params)
+
+      assert %{"charlist" => ["xxxxx", "xxxxx", "xxxxx", "xxxxx", "xxxxx"]} =
+               json_response(conn, 200)["data"]
+
+      params = string_params_for(:flood_fill, fill: " ")
+      conn = put(conn, Routes.canvas_path(conn, :draw, id), params)
+
+      assert %{
+               "charlist" => ["     ", "     ", "     ", "     ", "     "],
+               "height" => 5,
+               "id" => ^id,
+               "user_id" => _user_id,
+               "width" => 5
+             } = json_response(conn, 200)["data"]
+    end
+
     test "should render error when params are missing", %{conn: conn, id: id} do
       conn = put(conn, Routes.canvas_path(conn, :draw, id), %{})
 

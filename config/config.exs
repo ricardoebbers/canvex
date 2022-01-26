@@ -1,24 +1,15 @@
-# This file is responsible for configuring your application
-# and its dependencies with the aid of the Config module.
-#
-# This configuration file is loaded before any dependency and
-# is restricted to this project.
-
-# General application configuration
 import Config
 
 config :canvex,
   ecto_repos: [Canvex.Repo],
   generators: [binary_id: true]
 
-# Configures the endpoint
 config :canvex, CanvexWeb.Endpoint,
   url: [host: "localhost"],
   render_errors: [view: CanvexWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Canvex.PubSub,
   live_view: [signing_salt: "yzMeQl6p"]
 
-# Configure esbuild (the version is required)
 config :esbuild,
   version: "0.14.0",
   default: [
@@ -28,14 +19,10 @@ config :esbuild,
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
-# Configures Elixir's Logger
 config :logger, :console,
   format: "$time [$level] $metadata $message\n",
   metadata: [:request_id, :mfa]
 
-# Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-# Import environment specific config. This must remain at the bottom
-# of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

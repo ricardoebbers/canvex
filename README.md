@@ -115,27 +115,43 @@ The complete API documentation is done with the `openapi` specification and is a
 #### Step-by-step
 
 ```
-# Clone this repository
-git clone https://github.com/ricardoebbers/canvex.git
+# Clone this repository and change to the project directory:
+git clone https://github.com/ricardoebbers/canvex.git && cd canvex
 
-# Change directory to the repository folder
-cd canvex
-
-# Spin up docker containers
+# Spin up docker containers:
 docker-compose up -d
 
-# Create the database and run migrations
+# If it's the first time you run the project it will take some time for
+# the app to be generated. You can see what's going on with:
+docker-compose logs web 
+
+# The app is up, but there are still migrations to run:
 docker-compose run web mix ecto.setup
 #     If you see a message 'The database for Canvex.Repo couldn't be created'
 #     it's because the postgres container wasn't ready yet.
-#     Try running the command below again
+#     Try running the command again
 
-# Open your browser on localhost:4000 to find the Swagger UI API documentation
+# Finally, open your browser on localhost:4000 to find the Swagger UI API documentation
 xdg-open http://localhost:4000
-# The command above should work on ubuntu ;)
+#     ^ Should work on ubuntu ;)
 
-# Clean up
-docker-compose down --volumes
+# Have fun! :)
+```
+
+#### Testing
+
+All tests can be run with `mix test` locally. You do need elixir and erlang installed though. I suggest using [asdf](https://thinkingelixir.com/install-elixir-using-asdf/) for that!
+
+#### Cleaning up
+```
+# Clean up containers and images
+docker-compose down --rmi local --volumes
+
+# Delete project folder
+cd ..
+sudo rm -rf ./canvas
+#     ^ You need to run the rm command as sudo
+#     because the _build folder is created by the container
 ```
 
 #### Postman collection
@@ -176,7 +192,3 @@ The internal domain is separated into three main parts:
   - canvas: holds all operations that interfaces with the repository/database (create, get, update)
   - draw: holds all the logic behind "drawing" on a canvas
   - schema: holds the `canvas` schema, which validates the data before persisting.
-
-### Testing
-
-All tests can be run with `mix test` locally.

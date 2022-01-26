@@ -1,4 +1,6 @@
 # Canvex
+[![CI Tests](https://github.com/ricardoebbers/canvex/workflows/tests/badge.svg)](https://github.com/ricardoebbers/canvex/actions)
+[![Coverage Status](https://coveralls.io/repos/github/ricardoebbers/canvex/badge.svg?branch=main)](https://coveralls.io/github/ricardoebbers/canvex?branch=main)
 
 Canvex is a web service API made with Elixir that allows `drawing` ASCII art on a `canvas`.
 
@@ -116,7 +118,7 @@ For convenience a [postman collection](./postman/) is provided with all endpoint
 ### Gigalixir
 
 TODO: deploy to Gigalixir
-## About the project
+## Overview
 
 The implementation follows the Phoenix convention of separating Web and internal domain:
   - canvex: internal domain

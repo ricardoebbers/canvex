@@ -4,7 +4,31 @@
 
 Canvex is a web service API made with Elixir that allows `drawing` ASCII art on a `canvas`.
 
-## Canvas
+This project is available at [canvex.gigalixirapp.com](https://canvex.gigalixirapp.com/).
+
+**Attention**: Gigalixir free tier is very limited in terms of memory available, so you might find yourself looking at a `502 Bad Gateway` or a `503 Service Temporarily Unavailable` after trying to draw a canvas that is too big (larger than 350x350 or so). If that happens, it's because the server ran out of memory. In a minute or two the server will be up and running again, but you may have lost your art :(
+
+For better validation of the project and visualization of the canvas on the Swagger UI and live view page, I suggest keeping the canvas size below 150x150.
+
+## API
+
+The API consists of three endpoints:
+
+* `POST /api/canvas`: Creates a canvas
+* `GET /api/canvas/{id}`: Shows a canvas, given it's UUID
+* `PUT /api/canvas/{id}/draw`: Draws onto a canvas, given it's UUID
+
+## Frontend
+
+The complete API documentation was done with the `openapi` specifications and is available as a Swagger UI on the root `/` of the application.
+
+Also, you can see the canvas being updated live on your browser by going to `/canvas/{id}`. Here's an example of Swagger UI and Live View side by side:
+
+![Live view demo](./documentation/live_view_demo.gif)
+
+## Overview
+
+### Canvas
 
 Canvases are represented as a zero-indexed matrix (or list of lists) of `chars`, all being ASCII printable, with coordinates that start from the top left, like this:
 ```
@@ -23,7 +47,7 @@ Canvases are identifiable with a global unique identifier in the form of an UUID
 
 Valid canvases are persisted on the database with a reference to the user who created it.
 
-## Drawing operations
+### Drawing operations
 
 It's possible to do drawings on a `canvas` with ASCII printable `chars`.
 
@@ -33,7 +57,7 @@ The drawing operations possible are:
 
 Drawing operations are applied in the order they are given and may overlap.
 
-### Draw a rectangle
+#### Draw a rectangle
 
 Rectangles are drawn by passing the `x` and `y` coordinates of it's `top left vertex`, a `width`, a `height`, and can have a `fill`, an `outline`, or both.
 
@@ -67,7 +91,7 @@ Subsequent drawings of rectangles on the same canvas may overlap:
 (y axis)
 ```
 
-### Do a flood fill
+#### Do a flood fill
 
 A [flood fill](https://en.wikipedia.org/wiki/Flood_fill) operation draws the `fill` character to the start `x` and `y` coordinates, and continues to attempt drawing the character around (up, down, left, right) in each direction from the position it was drawn at, as long as a different character, or a border of the canvas, is not reached.
 
@@ -95,29 +119,15 @@ Here is an example of a flood fill operation:
 (y axis)
 ```
 
-## Running instructions
 
-The web service consists of three endpoints:
+## Running locally
 
-`POST /api/canvas`: Creates a canvas
-`GET /api/canvas/{id}`: Shows a canvas, given it's UUID
-`PUT /api/canvas/{id}/draw`: Draws onto a canvas, given it's UUID
-
-The complete API documentation was done with the `openapi` specification and is available as a Swagger UI on the root `/` of the application.
-
-Also, you can see the canvas being updated live on your browser by going to `/canvas/{id}`. Here's an example of Swagger UI and Live View side by side:
-![Live view demo](./documentation/live_view_demo.gif)
-
-
-
-### Locally
-
-#### Prerequisites
+### Prerequisites
 
 * Docker and docker-compose installed
 * Ports 5432 and 4000 available
 
-#### Step-by-step
+### Step-by-step
 
 ```
 # Clone this repository and change to the project directory:
@@ -143,11 +153,15 @@ xdg-open http://localhost:4000
 # Have fun! :)
 ```
 
-#### Testing
+### Testing
 
-All tests can be run with `mix test` locally. You do need elixir and erlang installed though. I suggest using [asdf](https://thinkingelixir.com/install-elixir-using-asdf/) for that!
+All automated tests can be run with `mix test` locally. You do need elixir and erlang installed though. I suggest using [asdf](https://thinkingelixir.com/install-elixir-using-asdf/) for that!
 
-#### Cleaning up
+### Postman collection
+
+For convenience and integration testing, a [postman collection](./postman/) is provided with all endpoints and requests examples.
+
+### Cleaning up
 ```
 # Clean up containers and images
 docker-compose down --rmi local --volumes
@@ -159,21 +173,7 @@ sudo rm -rf ./canvas
 #     because the _build folder is created by the container
 ```
 
-#### Postman collection
-
-For convenience a [postman collection](./postman/) is provided with all endpoints and requests examples.
-
-### Gigalixir
-
-This project is available at [canvex.gigalixirapp.com](https://canvex.gigalixirapp.com/).
-
-On the root path `/` you can find a Swagger UI with the documentation of the API and examples ready for testing.
-
-**Attention**: Gigalixir free tier is very limited in terms of memory available, so you might find yourself looking at a `502 Bad Gateway` or a `503 Service Temporarily Unavailable` after trying to draw a canvas that is too big (larger than 350x350 or so). If that happens, it's because the server ran out of memory. In a minute or two the server will be up and running again, but you may have lost your art :(
-
-For better validation of the project and visualization of the canvas on the Swagger UI, I suggest keeping the canvas size below 150x150.
-
-## Overview
+## Project architecture
 
 ### Dependencies
 
@@ -187,7 +187,7 @@ Besides that, I've added the following:
 * [ex_machina](https://github.com/thoughtbot/ex_machina) as a factory for testing
 * [open_api_spex](https://github.com/open-api-spex/open_api_spex) for API specification and Swagger UI generation
 
-### Project structure
+### Folders structure
 
 The implementation follows the Phoenix convention of separating Web and internal domain:
 ```

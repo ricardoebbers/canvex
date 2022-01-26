@@ -8,7 +8,7 @@ config :canvex, CanvexWeb.Endpoint,
   url: [host: "localhost"],
   render_errors: [view: CanvexWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Canvex.PubSub,
-  live_view: [signing_salt: "yzMeQl6p"]
+  live_view: [signing_salt: "Lbpz4LI+bJ/19cLVyeoT4PZRHIpHW62/"]
 
 config :esbuild,
   version: "0.14.0",

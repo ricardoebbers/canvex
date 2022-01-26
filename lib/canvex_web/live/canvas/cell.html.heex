@@ -1,0 +1,3 @@
+<%= for x <- 0..(assigns.width - 1) do %>
+    <td><%= Map.get(assigns.values, {x, assigns.row}) %></td>
+<% end %>

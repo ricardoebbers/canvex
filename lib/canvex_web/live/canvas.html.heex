@@ -1,0 +1,21 @@
+<table>
+    <tr>
+      <th>id</th>
+      <td><%= assigns.canvas.id %></td>
+    </tr>
+    <tr>
+      <th>user_id</th>
+      <td><%= assigns.canvas.user_id %></td>
+    </tr>
+    <tr>
+      <th>width</th>
+      <td><%= assigns.canvas.width %></td>
+    </tr>
+    <tr>
+      <th>height</th>
+      <td><%= assigns.canvas.height %></td>
+    </tr>
+</table>
+<table>
+<%= live_component(__MODULE__.Row, %{width: assigns.canvas.width, height: assigns.canvas.height, values: assigns.canvas.values}, id: "canvas_table") %>
+</table>

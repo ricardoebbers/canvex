@@ -1,0 +1,159 @@
+{
+	"info": {
+		"_postman_id": "c988475c-e3a7-4e28-a726-befc96b80192",
+		"name": "Canvex",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Canvas",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"    pm.collectionVariables.set(\"canvas_id\", pm.response.json()['data']['id']);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user_id\": \"{{$guid}}\",\n    \"width\": 15,\n    \"height\": 10,\n    \"fill\": \" \"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{canvex_host}}/api/canvas",
+					"host": [
+						"{{canvex_host}}"
+					],
+					"path": [
+						"api",
+						"canvas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Canvas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{canvex_host}}/api/canvas/{{canvas_id}}",
+					"host": [
+						"{{canvex_host}}"
+					],
+					"path": [
+						"api",
+						"canvas",
+						"{{canvas_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Draw Rectangle",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"command\": \"rectangle\",\n    \"x\": 1,\n    \"y\": 1,\n    \"width\": 5,\n    \"height\": 5,\n    \"fill\": \".\",\n    \"outline\": \"R\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{canvex_host}}/api/canvas/{{canvas_id}}/draw",
+					"host": [
+						"{{canvex_host}}"
+					],
+					"path": [
+						"api",
+						"canvas",
+						"{{canvas_id}}",
+						"draw"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Flood Fill",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"command\": \"flood_fill\",\n    \"x\": 0,\n    \"y\": 0,\n    \"fill\": \"!\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{canvex_host}}/api/canvas/{{canvas_id}}/draw",
+					"host": [
+						"{{canvex_host}}"
+					],
+					"path": [
+						"api",
+						"canvas",
+						"{{canvas_id}}",
+						"draw"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "canvex_host",
+			"value": "http://localhost:4000",
+			"type": "default"
+		},
+		{
+			"key": "canvas_id",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

@@ -1,6 +1,6 @@
 # Canvex
 
-Canvex is a web service made with Elixir that allows `drawing` ASCII art on a `canvas`.
+Canvex is a web service API made with Elixir that allows `drawing` ASCII art on a `canvas`.
 
 ## Canvas
 
@@ -21,7 +21,7 @@ Canvases are identifiable with a global unique identifier in the form of an UUID
 
 Valid canvases are persisted on the database with a reference to the user who created it.
 
-## Drawing
+## Drawing operations
 
 It's possible to do drawings on a `canvas` with ASCII printable `chars`.
 
@@ -93,4 +93,38 @@ Here is an example of a flood fill operation:
 (y axis)
 ```
 
+## Running instructions
 
+### Locally
+
+#### Prerequisites
+
+* Docker and docker-compose installed
+* Ports 5432 and 4000 available
+
+#### Step-by-step
+
+* Clone this repository
+* 
+TODO: describe all steps
+
+#### Postman collection
+
+For convenience a [postman collection](./postman/) is provided with all endpoints and requests examples.
+
+
+### Gigalixir
+
+TODO: deploy to Gigalixir
+## About the project
+
+The implementation follows the Phoenix convention of separating Web and internal domain:
+  - canvex: internal domain
+  - canvex_web: default MVC architecture
+
+The internal domain is separated into three main parts:
+  - canvas: holds all operations that interfaces with the repository/database (create, get, update)
+  - draw: holds all the logic behind "drawing" on a canvas
+  - schema: holds the `canvas` schema, which validates the data before persisting.
+
+TODO: add more details
